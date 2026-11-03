@@ -1,20 +1,29 @@
 # -*- coding: utf-8 -*-
-"""Generate a fresh exam .docx for a paper: heading + 4 paragraphs + 3x4 table,
-header/footer empty, portrait, normal margins, no table borders, base font 12pt
-(Nirmala UI / Mangal for Devanagari complex script)."""
+"""
+docx_gen.py – Generate a fresh exam .docx from a Paper object.
+
+The document uses Nirmala UI (Windows Devanagari UI font; falls back to Mangal)
+with portrait A4, 1-inch margins, empty header/footer, and no table borders
+so students start from a clean slate.
+"""
+
+from __future__ import annotations
+
 from docx import Document
 from docx.shared import Pt, Inches
 from docx.enum.style import WD_STYLE_TYPE
 from docx.oxml.ns import qn
 from docx.oxml import OxmlElement
 
-BASE_FONT = 'Nirmala UI'   # Windows Devanagari UI font; falls back to Mangal on old systems
+from paper_loader import Paper
+
+BASE_FONT = 'Nirmala UI'   # Falls back to Mangal on older Windows
 BASE_SIZE = Pt(12)
 HEADING_SIZE = Pt(14)
 
 
-def _set_cs_font(style_or_run, name, size):
-    """Set both latin and complex-script font so Hindi renders in Word."""
+def _set_cs_font(style_or_run, name: str, size) -> None:
+    """Set both latin and complex-script font so Devanagari renders correctly in Word."""
     rpr = style_or_run.element.get_or_add_rPr()
     rfonts = rpr.find(qn('w:rFonts'))
     if rfonts is None:
@@ -29,10 +38,11 @@ def _set_cs_font(style_or_run, name, size):
     szcs.set(qn('w:val'), str(int(size.pt * 2)))
 
 
-def generate(paper, out_path):
+def generate(paper: Paper, out_path: str) -> str:
+    """Write a fresh exam document for *paper* to *out_path* and return it."""
     doc = Document()
 
-    # base style
+    # --- base styles --------------------------------------------------------
     normal = doc.styles['Normal']
     normal.font.name = BASE_FONT
     normal.font.size = BASE_SIZE
@@ -51,7 +61,7 @@ def generate(paper, out_path):
     head_style.font.bold = True
     _set_cs_font(head_style, BASE_FONT, HEADING_SIZE)
 
-    # section: portrait A4, normal (1 inch) margins, empty header/footer
+    # --- section: portrait A4, 1-inch margins, empty header/footer ----------
     sec = doc.sections[0]
     sec.page_width, sec.page_height = Inches(8.27), Inches(11.69)
     for attr in ('left_margin', 'right_margin', 'top_margin', 'bottom_margin'):
@@ -62,19 +72,20 @@ def generate(paper, out_path):
     sec.header.paragraphs[0].text = ''
     sec.footer.paragraphs[0].text = ''
 
-    # heading + paragraphs
-    doc.add_paragraph(paper['heading'], style='EOHeading')
-    for p in paper['paras']:
+    # --- content: heading, paragraphs, table --------------------------------
+    d = paper.document
+    doc.add_paragraph(d['heading'], style='EOHeading')
+    for p in d.get('paragraphs', []):
         doc.add_paragraph(p, style='EOBody')
 
-    # table: head + 3 rows, no borders
-    tdata = [paper['table']['head']] + paper['table']['rows']
-    table = doc.add_table(rows=len(tdata), cols=len(tdata[0]))
-    for r, row in enumerate(tdata):
-        for c, txt in enumerate(row):
-            cell = table.rows[r].cells[c]
-            cell.paragraphs[0].style = doc.styles['EOBody']
-            cell.paragraphs[0].add_run(txt)
+    if 'table' in d and d['table']:
+        tdata = [d['table']['head']] + d['table']['rows']
+        table = doc.add_table(rows=len(tdata), cols=len(tdata[0]))
+        for r, row in enumerate(tdata):
+            for c, txt in enumerate(row):
+                cell = table.rows[r].cells[c]
+                cell.paragraphs[0].style = doc.styles['EOBody']
+                cell.paragraphs[0].add_run(txt)
 
     doc.save(out_path)
     return out_path
