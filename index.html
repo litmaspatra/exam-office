@@ -334,6 +334,167 @@
             .marks-big { font-size: 2.2rem; }
             nav { order: 3; width: 100%; }
         }
+
+        /* ── WORD EFFICIENCY SIMULATOR ── */
+        .ws-layout { display: flex; gap: 16px; align-items: flex-start; }
+        .ws-tasks { width: 330px; flex-shrink: 0; max-height: 640px; overflow-y: auto; }
+        .ws-word { flex: 1; min-width: 0; }
+
+        .task-list { margin-left: 18px; font-size: 0.8rem; line-height: 1.5; }
+        .task-list li { margin-bottom: 8px; color: var(--text-dim); padding-left: 2px; }
+        .task-list li .tmarks { color: var(--accent); font-weight: 700; font-size: 0.72rem; }
+        .task-list li.done { color: var(--correct); }
+        .task-list li.done::marker { content: "\2705 "; }
+        .task-list li::marker { font-weight: 700; color: var(--text-faint); }
+
+        .word-win {
+            background: #fff; border: 1px solid #c9c9c9; border-radius: 4px;
+            overflow: hidden; font-family: 'Segoe UI', 'Noto Sans', sans-serif;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.35);
+        }
+        .w13-titlebar {
+            background: #f6f6f6; color: #535353; font-size: 12px;
+            display: flex; align-items: center; height: 30px; position: relative;
+        }
+        .w13-qat { display: flex; align-items: center; gap: 7px; padding: 0 10px; z-index: 1; }
+        .w13-logo {
+            background: #2b579a; color: #fff; font-weight: 700; font-size: 11px;
+            width: 17px; height: 17px; display: inline-flex; align-items: center; justify-content: center;
+            border-radius: 2px;
+        }
+        .qat-ic { color: #2b79c6; font-size: 12px; }
+        .qat-caret { color: #777; font-size: 8px; }
+        .w13-title {
+            position: absolute; left: 0; right: 0; text-align: center; pointer-events: none;
+            font-size: 12px; color: #535353;
+        }
+        .w13-winbtns { margin-left: auto; display: flex; align-items: center; z-index: 1; }
+        .wbtn {
+            padding: 3px 11px; font-size: 11px; color: #666; cursor: default;
+        }
+        .wbtn:hover { background: #e5e5e5; }
+        .wbtn-close:hover { background: #e81123; color: #fff; }
+
+        .ribbon { background: #f5f5f5; border-bottom: 1px solid #d4d4d4; color: #1d1d1f; }
+        .ribbon-tabs { display: flex; align-items: stretch; padding: 0 8px; background: #f6f6f6; overflow: hidden; }
+        .rtab, .rtab-x {
+            background: transparent; border: none; padding: 6px 10px 5px; font-size: 10.5px; white-space: nowrap;
+            font-weight: 400; color: #444; cursor: pointer; font-family: 'Segoe UI', 'Noto Sans', sans-serif;
+            letter-spacing: 0.02em;
+        }
+        .rtab-x { cursor: default; }
+        .rtab-file { background: #1e468e; color: #fff; font-weight: 600; padding: 6px 16px 5px; margin-right: 6px; }
+        .rtab:hover:not(.active) { background: #eaeaea; }
+        .rtab.active { background: #f5f5f5; color: #333; font-weight: 600; box-shadow: inset 0 2px 0 #1e468e; }
+        .tt-band { display: inline-flex; align-items: stretch; background: #f2c94c; margin-left: 4px; }
+        .tt-title {
+            font-size: 9px; font-weight: 700; color: #6b5300; display: inline-flex; align-items: center;
+            padding: 0 6px; letter-spacing: 0.04em;
+        }
+        .tt-band .rtab:hover:not(.active) { background: #f7da7d; }
+        .tt-band .rtab.active { background: #f5f5f5; box-shadow: inset 0 2px 0 #f2c94c; }
+        .signin { margin-left: auto; font-size: 11px; color: #666; display: inline-flex; align-items: center; gap: 4px; padding-right: 6px; }
+
+        .ribbon-body {
+            background: #f5f5f5; padding: 4px 10px 2px; display: flex; gap: 0; flex-wrap: wrap;
+            min-height: 92px; align-items: stretch;
+        }
+        .rgroup { display: flex; flex-direction: column; justify-content: space-between; border-right: 1px solid #e1e1e1; padding: 0 10px; }
+        .rgroup:first-child { padding-left: 0; }
+        .rgroup:last-child { border-right: none; }
+        .rrow { display: flex; gap: 1px; align-items: center; }
+        .rrow + .rrow { margin-top: 2px; }
+        .rrow-edit { flex-direction: column; align-items: stretch; gap: 3px; }
+        .rlabel { font-size: 8.5px; color: #888; text-align: center; padding-top: 2px; }
+        .rbtn {
+            min-width: 23px; height: 22px; padding: 0 4px; border: 1px solid transparent; border-radius: 2px;
+            background: transparent; cursor: pointer; font-size: 12px; color: #1d1d1f;
+            font-family: 'Segoe UI', 'Noto Sans', sans-serif; line-height: 1.1;
+        }
+        .rbtn:hover { background: #cde5f1; border-color: #92c0e0; }
+        .rbtn.txt { width: auto; font-size: 11px; display: inline-flex; align-items: center; gap: 4px; height: 20px; }
+        .rbtn.big {
+            height: auto; min-height: 56px; font-size: 10.5px; display: inline-flex; flex-direction: column;
+            align-items: center; justify-content: center; gap: 2px; padding: 3px 8px; text-align: center;
+        }
+        .rbtn.big .ric { font-size: 19px; color: #2b579a; }
+        .rbtn.dead, .rsel.dead, .rstyle.dead, .rfontbox { opacity: 0.55; }
+        .rbtn.dead { pointer-events: none; }
+        .ric { font-size: 13px; }
+        .rsplit { display: inline-flex; align-items: center; }
+        .rsplit-main { border-radius: 2px 0 0 2px; }
+        .rsel {
+            height: 20px; border: 1px solid #c5c5c5; border-radius: 0; font-size: 11px;
+            background: #fff; color: #1d1d1f; font-family: 'Segoe UI', 'Noto Sans', sans-serif;
+        }
+        .rsel-size { width: 44px; }
+        .rsel-mini {
+            width: 16px; padding: 0; font-size: 8px; border: 1px solid transparent; background: transparent;
+            border-radius: 0 2px 2px 0; height: 22px;
+        }
+        .rsel-mini:hover { background: #cde5f1; border-color: #92c0e0; }
+        .rfontbox {
+            height: 20px; border: 1px solid #c5c5c5; background: #fff; font-size: 11px; color: #1d1d1f;
+            display: inline-flex; align-items: center; gap: 6px; padding: 0 6px; min-width: 96px;
+        }
+        .rcaret { font-size: 8px; color: #666; margin-left: auto; }
+        .rstyle {
+            border: 1px solid #d4d4d4; background: #fff; font-size: 9.5px; color: #333;
+            padding: 3px 7px; text-align: center; line-height: 1.35; min-width: 56px;
+        }
+        .rstyle:first-child { border-color: #2e74b5; }
+        .rinput {
+            height: 20px; border: 1px solid #c5c5c5; font-size: 11px; padding: 0 6px;
+            font-family: 'Segoe UI', 'Noto Sans', sans-serif; color: #1d1d1f; background: #fff; width: 130px;
+        }
+
+        .page-scroll { background: #efefef; padding: 20px; max-height: 520px; overflow-y: auto; }
+        .page {
+            background: #fff; color: #111; width: 100%; max-width: 640px; margin: 0 auto;
+            min-height: 780px; padding: 72px 72px; box-shadow: 0 1px 4px rgba(0,0,0,0.22);
+            border: 1px solid #d0d0d0;
+            font-family: 'Noto Sans Devanagari', 'Mangal', sans-serif; font-size: 12pt; line-height: 1.6;
+            position: relative;
+        }
+        .page.landscape { max-width: 920px; min-height: 480px; }
+        .page.margins-narrow { padding: 36px 36px; }
+        .page.margins-wide { padding: 100px 110px; }
+        .page.page-bordered { outline: 3px double #2b579a; outline-offset: -14px; }
+
+        .doc-header, .doc-footer {
+            min-height: 26px; font-size: 10.5pt; color: #555; border-bottom: 1px dashed transparent;
+            padding: 2px 4px;
+        }
+        .doc-footer { border-top: 1px dashed transparent; border-bottom: none; margin-top: 24px; }
+        .doc-header.editing, .doc-footer.editing { border-color: #2b579a; background: #f0f6ff; color: #111; }
+        .doc-header { margin-bottom: 18px; }
+        .pagenum { border: 1px solid #999; padding: 0 5px; border-radius: 3px; background: #f2f2f2; }
+
+        .doc-heading { font-size: 16pt; font-weight: 700; margin: 0 0 12px; cursor: text; }
+        .doc-body p { margin: 0 0 10px; cursor: text; border-radius: 2px; padding: 1px 3px; }
+        .doc-body p.active-para, .doc-heading.active-para { background: #dce9f9; outline: 1px solid #9dc3e6; }
+        .doc-body p.page-break-before { border-top: 2px dashed #999; padding-top: 14px; }
+
+        .doc-table { border-collapse: collapse; margin: 12px 0; width: 85%; }
+        .doc-table td, .doc-table th { padding: 5px 10px; border: none; min-width: 60px; font-size: 11pt; }
+        .doc-table.tbl-bordered td, .doc-table.tbl-bordered th { border: 1px solid #333; }
+        .doc-table td[contenteditable="true"] { background: #fffbe8; }
+
+        .word-statusbar {
+            background: #1e478a; color: #fff; font-size: 10.5px; padding: 4px 12px;
+            display: flex; align-items: center; gap: 16px; font-family: 'Segoe UI', 'Noto Sans', sans-serif;
+        }
+        .sb-left { letter-spacing: 0.03em; }
+        .sb-words { letter-spacing: 0.03em; }
+        .sb-msg { opacity: 0.85; font-size: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .sb-right { margin-left: auto; display: inline-flex; align-items: center; gap: 8px; }
+        .sb-view { opacity: 0.9; }
+        .sb-zoom { font-size: 9px; letter-spacing: 0.05em; white-space: nowrap; }
+
+        @media (max-width: 900px) {
+            .ws-layout { flex-direction: column; }
+            .ws-tasks { width: 100%; max-height: none; }
+        }
     </style>
 </head>
 <body>
@@ -344,10 +505,12 @@
             <div class="brand-badge">RSSB New Pattern</div>
         </div>
         <nav>
-            <button class="nav-tab active" data-target="tests"><span>📝 Tests</span></button>
+            <button class="nav-tab active" data-target="eff"><span>⚡ Efficiency Tests</span></button>
+            <button class="nav-tab" data-target="speed"><span>📝 Speed Tests</span></button>
             <button class="nav-tab" data-target="results"><span>📈 My Results</span></button>
             <button class="nav-tab" data-target="pattern"><span>ℹ️ Exam Pattern</span></button>
-            <button class="nav-tab" data-target="exam" id="exam-tab" style="display:none;"><span>⏱️ Test Running</span></button>
+            <button class="nav-tab" data-target="exam" id="exam-tab" style="display:none;"><span>⏱️ Speed Test Running</span></button>
+            <button class="nav-tab" data-target="wordsim" id="wordsim-tab" style="display:none;"><span>⏱️ Efficiency Test Running</span></button>
         </nav>
         <div class="header-actions">
             <button class="btn-icon" id="sound-toggle-btn" title="Toggle Sound"><span id="sound-icon">🔊</span></button>
@@ -356,8 +519,27 @@
     </header>
 
     <main>
+        <!-- EFFICIENCY TESTS HOME -->
+        <section class="panel active" id="panel-eff">
+            <div class="info-strip">
+                <strong>Paper 3 &amp; 4 - दक्षता परीक्षण (Efficiency Test):</strong> not typing - <strong>formatting tasks</strong>.
+                Hindi paper runs in <strong>MS Word 2013</strong> (DevLys 010, Remington keyboard): a document with paragraphs + a table is already on screen, and a printed paper gives <strong>15 tasks</strong> worth <strong>25 marks in 10 minutes</strong> (min 9; SC/ST 7.75).
+                Cut-Copy-Paste, right-click, Select-All and function keys are <strong>switched off</strong> in the exam - ribbon + mouse only; Ctrl+Z and Backspace work.
+                Do exactly what each task asks - extra edits or changing the given text forfeit marks.
+            </div>
+
+            <h2 class="section-title">Hindi Efficiency - Word 2013 Papers</h2>
+            <div class="section-sub">15 tasks · 25 marks · 10 min · auto-marked · Practice mode ticks each task as you complete it</div>
+            <div class="test-grid" id="word-tests"></div>
+
+            <h2 class="section-title">English Efficiency - Excel 2013</h2>
+            <div class="info-strip">
+                The English paper runs in <strong>MS Excel 2013</strong> (cell formatting, borders, alignment, basic formulas like SUM). An in-browser Excel trainer is the next module - for now practise the same task types in real Excel or LibreOffice Calc.
+            </div>
+        </section>
+
         <!-- TESTS HOME -->
-        <section class="panel active" id="panel-tests">
+        <section class="panel" id="panel-speed">
             <div class="info-strip">
                 <strong>RSSB Clerk Grade-II / Junior Assistant (Phase-II) - नया पैटर्न:</strong>
                 4 papers × 10 min × 25 marks, minimum <strong>9 marks in each paper</strong> (36%; SC/ST 7.75 with 5% relaxation).
@@ -476,6 +658,234 @@
             <div class="progress-outer"><div class="progress-inner" id="exam-progress"></div></div>
         </section>
 
+        <!-- WORD EFFICIENCY SIMULATOR -->
+        <section class="panel" id="panel-wordsim">
+            <div class="runner-top">
+                <div>
+                    <div class="runner-title" id="ws-title">Paper</div>
+                    <div class="section-sub" id="ws-subtitle" style="margin:2px 0 0;">Practice mode</div>
+                </div>
+                <div class="timer" id="ws-timer">10:00</div>
+                <div style="display:flex; gap:8px;">
+                    <button class="btn secondary" id="ws-quit-btn">Quit</button>
+                    <button class="btn danger" id="ws-submit-btn">Submit Paper</button>
+                </div>
+            </div>
+
+            <div class="ws-layout">
+                <div class="ws-tasks card-block" style="margin-top:0;">
+                    <h3 style="margin-bottom:4px;">प्रश्न पत्र <span style="color:var(--text-dim); font-weight:600; font-size:0.75rem;">(Question Paper)</span></h3>
+                    <div class="section-sub" id="ws-marks-live" style="margin-bottom:10px;">Marks: 0 / 25</div>
+                    <ol class="task-list" id="task-list"></ol>
+                </div>
+
+
+                <div class="ws-word">
+                    <div class="word-win">
+                        <div class="w13-titlebar">
+                            <div class="w13-qat">
+                                <span class="w13-logo">W</span>
+                                <span class="qat-ic" title="Save">&#128427;</span>
+                                <span class="qat-ic" title="Undo">&#8630;</span>
+                                <span class="qat-ic" title="Redo">&#8631;</span>
+                                <span class="qat-ic qat-caret">&#9662;</span>
+                            </div>
+                            <div class="w13-title">Document1 - Microsoft Word</div>
+                            <div class="w13-winbtns">
+                                <span class="wbtn">?</span><span class="wbtn">&#708;</span><span class="wbtn">&#8211;</span><span class="wbtn">&#9634;</span><span class="wbtn wbtn-close">&#10005;</span>
+                            </div>
+                        </div>
+                        <div class="ribbon">
+                            <div class="ribbon-tabs">
+                                <span class="rtab-x rtab-file">FILE</span>
+                                <button class="rtab active" data-rtab="home">HOME</button>
+                                <button class="rtab" data-rtab="insert">INSERT</button>
+                                <button class="rtab" data-rtab="design">DESIGN</button>
+                                <button class="rtab" data-rtab="layout">PAGE LAYOUT</button>
+                                <span class="rtab-x">REFERENCES</span><span class="rtab-x">MAILINGS</span><span class="rtab-x">REVIEW</span><span class="rtab-x">VIEW</span>
+                                <span class="tt-band" id="tt-band" style="display:none;"><span class="tt-title">TABLE TOOLS</span><button class="rtab" data-rtab="table">DESIGN</button></span>
+                                <span class="signin">Sign in <span class="signin-ic">&#9787;</span></span>
+                            </div>
+                            <div class="ribbon-body" id="ribbon-home">
+                                <div class="rgroup">
+                                    <div class="rrow rrow-clip">
+                                        <button class="rbtn big dead" title="Paste (disabled in exam)"><span class="ric">&#128203;</span>Paste</button>
+                                        <span class="rcol">
+                                            <button class="rbtn txt dead" title="Cut (disabled in exam)"><span class="ric">&#9986;</span> Cut</button>
+                                            <button class="rbtn txt dead" title="Copy (disabled in exam)"><span class="ric">&#128464;</span> Copy</button>
+                                            <button class="rbtn txt dead" title="Format Painter (disabled in exam)"><span class="ric">&#128396;</span> Format Painter</button>
+                                        </span>
+                                    </div>
+                                    <div class="rlabel">Clipboard</div>
+                                </div>
+                                <div class="rgroup rgroup-font">
+                                    <div class="rrow">
+                                        <span class="rfontbox" title="Font">DevLys 010 <span class="rcaret">&#9662;</span></span>
+                                        <select class="rsel rsel-size" data-cmd="size" title="Font Size">
+                                            <option value="">12</option><option value="11pt">11</option><option value="12pt">12</option><option value="14pt">14</option><option value="16pt">16</option><option value="18pt">18</option><option value="20pt">20</option>
+                                        </select>
+                                        <button class="rbtn dead" title="Grow Font"><b>A</b><sup>&#9650;</sup></button>
+                                        <button class="rbtn dead" title="Shrink Font"><b>A</b><sup>&#9660;</sup></button>
+                                        <button class="rbtn dead" title="Change Case">Aa</button>
+                                        <button class="rbtn dead" title="Clear Formatting"><span style="color:#e81123;">A</span>&#128393;</button>
+                                    </div>
+                                    <div class="rrow">
+                                        <button class="rbtn" data-cmd="bold" title="Bold"><b>B</b></button>
+                                        <button class="rbtn" data-cmd="italic" title="Italic"><i>I</i></button>
+                                        <button class="rbtn" data-cmd="underline" title="Underline"><u>U</u></button>
+                                        <button class="rbtn" data-cmd="strike" title="Strikethrough"><s>abc</s></button>
+                                        <button class="rbtn dead" title="Subscript">X<sub>2</sub></button>
+                                        <button class="rbtn dead" title="Superscript">X<sup>2</sup></button>
+                                        <button class="rbtn dead" title="Text Effects"><span style="color:#4a86e8; text-shadow:0 0 3px #4a86e8;">A</span></button>
+                                        <span class="rsplit">
+                                            <button class="rbtn rsplit-main dead" title="Text Highlight"><span style="border-bottom:3px solid #fde047;">ab</span></button>
+                                            <select class="rsel rsel-mini" data-cmd="highlight" title="Text Highlight Color">
+                                                <option value="">&#9662;</option><option value="#fde047">Yellow</option><option value="#67e8f9">Cyan</option><option value="#f9a8d4">Pink</option><option value="#86efac">Green</option>
+                                            </select>
+                                        </span>
+                                        <span class="rsplit">
+                                            <button class="rbtn rsplit-main dead" title="Font Color"><span style="border-bottom:3px solid #e81123;">A</span></button>
+                                            <select class="rsel rsel-mini" data-cmd="color" title="Font Color">
+                                                <option value="">&#9662;</option><option value="#000000">Black</option><option value="#dc2626">Red</option><option value="#2563eb">Blue</option><option value="#16a34a">Green</option>
+                                            </select>
+                                        </span>
+                                    </div>
+                                    <div class="rlabel">Font</div>
+                                </div>
+                                <div class="rgroup">
+                                    <div class="rrow">
+                                        <button class="rbtn dead" title="Bullets"><span class="ric">&#8226;&#8801;</span></button>
+                                        <button class="rbtn dead" title="Numbering"><span style="font-size:0.62rem;">1.&#8801;</span></button>
+                                        <button class="rbtn dead" title="Multilevel List"><span style="font-size:0.62rem;">1a.&#8801;</span></button>
+                                        <button class="rbtn dead" title="Decrease Indent">&#8676;&#8801;</button>
+                                        <button class="rbtn" data-cmd="indent" title="Increase Indent">&#8677;&#8801;</button>
+                                        <button class="rbtn dead" title="Sort">A&#8595;Z</button>
+                                        <button class="rbtn dead" title="Show/Hide &#182;">&#182;</button>
+                                    </div>
+                                    <div class="rrow">
+                                        <button class="rbtn" data-cmd="align-left" title="Align Left"><svg width="13" height="10" viewBox="0 0 13 10"><path d="M0 1h13M0 4h8M0 7h13M0 10h8" stroke="#444" stroke-width="1.4"/></svg></button>
+                                        <button class="rbtn" data-cmd="align-center" title="Center"><svg width="13" height="10" viewBox="0 0 13 10"><path d="M0 1h13M2.5 4h8M0 7h13M2.5 10h8" stroke="#444" stroke-width="1.4"/></svg></button>
+                                        <button class="rbtn" data-cmd="align-right" title="Align Right"><svg width="13" height="10" viewBox="0 0 13 10"><path d="M0 1h13M5 4h8M0 7h13M5 10h8" stroke="#444" stroke-width="1.4"/></svg></button>
+                                        <button class="rbtn" data-cmd="align-justify" title="Justify"><svg width="13" height="10" viewBox="0 0 13 10"><path d="M0 1h13M0 4h13M0 7h13M0 10h13" stroke="#444" stroke-width="1.4"/></svg></button>
+                                        <span class="rsplit">
+                                            <button class="rbtn rsplit-main dead" title="Line and Paragraph Spacing"><svg width="13" height="11" viewBox="0 0 13 11"><path d="M4 2h9M4 5.5h9M4 9h9M1.5 0v11M0 2l1.5-2L3 2M0 9l1.5 2L3 9" stroke="#444" stroke-width="1.2" fill="none"/></svg></button>
+                                            <select class="rsel rsel-mini" data-cmd="linespacing" title="Line Spacing">
+                                                <option value="">&#9662;</option><option value="1">1.0</option><option value="1.15">1.15</option><option value="1.5">1.5</option><option value="2">2.0</option><option value="2.5">2.5</option>
+                                            </select>
+                                        </span>
+                                        <span class="rsplit">
+                                            <button class="rbtn rsplit-main dead" title="Paragraph Spacing After">&#8801;&#8595;</button>
+                                            <select class="rsel rsel-mini" data-cmd="spaceafter" title="Space After Paragraph">
+                                                <option value="">&#9662;</option><option value="0pt">0 pt</option><option value="6pt">6 pt</option><option value="8pt">8 pt</option><option value="12pt">12 pt</option>
+                                            </select>
+                                        </span>
+                                        <button class="rbtn dead" title="Shading"><svg width="13" height="11" viewBox="0 0 13 11"><path d="M2 8l5-7 4 5-5 3z" fill="#999"/><rect x="1" y="9" width="11" height="2" fill="#444"/></svg></button>
+                                        <button class="rbtn dead" title="Borders"><svg width="13" height="11" viewBox="0 0 13 11"><rect x="1" y="1" width="11" height="9" fill="none" stroke="#444"/><path d="M1 6h11" stroke="#444"/></svg></button>
+                                    </div>
+                                    <div class="rlabel">Paragraph</div>
+                                </div>
+                                <div class="rgroup rgroup-styles">
+                                    <div class="rrow">
+                                        <span class="rstyle dead">AaBbCc<br>Normal</span>
+                                        <span class="rstyle dead" style="color:#2e74b5;">AaBb<br>Heading 1</span>
+                                        <span class="rstyle dead" style="color:#2e74b5;">AaBb<br>Heading 2</span>
+                                        <span class="rstyle dead">AaBbCc<br>Title</span>
+                                    </div>
+                                    <div class="rlabel">Styles</div>
+                                </div>
+                                <div class="rgroup">
+                                    <div class="rrow rrow-edit">
+                                        <input class="rinput" id="find-input" placeholder="Find what...">
+                                        <input class="rinput" id="replace-input" placeholder="Replace with...">
+                                        <button class="rbtn txt" data-cmd="replaceall" title="Replace All">Replace All</button>
+                                    </div>
+                                    <div class="rlabel">Editing</div>
+                                </div>
+                            </div>
+                            <div class="ribbon-body" id="ribbon-insert" style="display:none;">
+                                <div class="rgroup">
+                                    <div class="rrow">
+                                        <button class="rbtn big" data-cmd="page-break" title="Page Break Before Paragraph"><span class="ric">&#128196;</span>Page<br>Break</button>
+                                    </div>
+                                    <div class="rlabel">Pages</div>
+                                </div>
+                                <div class="rgroup">
+                                    <div class="rrow">
+                                        <button class="rbtn big" data-cmd="edit-header" title="Header"><span class="ric">&#9713;</span>Header</button>
+                                        <button class="rbtn big" data-cmd="edit-footer" title="Footer"><span class="ric">&#9716;</span>Footer</button>
+                                        <button class="rbtn big" data-cmd="page-number" title="Page Number"><span class="ric">#</span>Page<br>Number</button>
+                                    </div>
+                                    <div class="rlabel">Header &amp; Footer</div>
+                                </div>
+                            </div>
+                            <div class="ribbon-body" id="ribbon-design" style="display:none;">
+                                <div class="rgroup">
+                                    <div class="rrow">
+                                        <span class="rsplit">
+                                            <button class="rbtn rsplit-main dead" title="Page Color"><svg width="13" height="11" viewBox="0 0 13 11"><rect x="1" y="1" width="9" height="9" fill="#dbeafe" stroke="#444"/><path d="M7 5l3-3 2 2-3 3z" fill="#999"/></svg></button>
+                                            <select class="rsel rsel-mini" data-cmd="pagecolor" title="Page Color">
+                                                <option value="">&#9662;</option><option value="#ffffff">White</option><option value="#dbeafe">Light Blue</option><option value="#fef9c3">Light Yellow</option><option value="#dcfce7">Light Green</option>
+                                            </select>
+                                        </span>
+                                        <button class="rbtn big" data-cmd="page-border" title="Page Borders"><span class="ric">&#9649;</span>Page<br>Borders</button>
+                                    </div>
+                                    <div class="rlabel">Page Background</div>
+                                </div>
+                            </div>
+                            <div class="ribbon-body" id="ribbon-layout" style="display:none;">
+                                <div class="rgroup">
+                                    <div class="rrow">
+                                        <span class="rsplit">
+                                            <button class="rbtn rsplit-main dead" title="Margins"><svg width="13" height="11" viewBox="0 0 13 11"><rect x="1" y="1" width="11" height="9" fill="none" stroke="#444"/><path d="M3 3h7M3 5.5h7M3 8h5" stroke="#444" stroke-width="1.1"/></svg></button>
+                                            <select class="rsel rsel-mini" data-cmd="margins" title="Margins">
+                                                <option value="">&#9662;</option><option value="normal">Normal</option><option value="narrow">Narrow</option><option value="wide">Wide</option>
+                                            </select>
+                                        </span>
+                                        <button class="rbtn big" data-cmd="orientation" title="Orientation"><span class="ric">&#8635;</span>Orientation</button>
+                                    </div>
+                                    <div class="rlabel">Page Setup</div>
+                                </div>
+                            </div>
+                            <div class="ribbon-body" id="ribbon-table" style="display:none;">
+                                <div class="rgroup">
+                                    <div class="rrow">
+                                        <button class="rbtn big" data-cmd="tbl-head-bold" title="Bold Head Row"><b>B</b><br>Head Row</button>
+                                        <button class="rbtn big" data-cmd="tbl-head-center" title="Center Head Row"><svg width="13" height="10" viewBox="0 0 13 10"><path d="M0 1h13M2.5 4h8M0 7h13M2.5 10h8" stroke="#444" stroke-width="1.4"/></svg><br>Head Row</button>
+                                        <span class="rsplit">
+                                            <button class="rbtn big rsplit-main dead" title="Shading"><span class="ric">&#9924;</span><br>Shading</button>
+                                            <select class="rsel rsel-mini" data-cmd="tbl-head-shade" title="Shade Head Row" style="margin-top:18px;">
+                                                <option value="">&#9662;</option><option value="1">Yellow</option>
+                                            </select>
+                                        </span>
+                                        <button class="rbtn big" data-cmd="tbl-borders" title="Borders"><span class="ric">&#9783;</span><br>Borders</button>
+                                    </div>
+                                    <div class="rlabel">Table Styles</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="page-scroll" id="page-scroll">
+                            <div class="page" id="page">
+                                <div class="doc-header" id="doc-header" contenteditable="false"></div>
+                                <h1 class="doc-heading" id="doc-heading" contenteditable="true" spellcheck="false"></h1>
+                                <div class="doc-body" id="doc-body" contenteditable="true" spellcheck="false"></div>
+                                <table class="doc-table" id="doc-table"></table>
+                                <div class="doc-footer" id="doc-footer" contenteditable="false"></div>
+                            </div>
+                        </div>
+                        <div class="word-statusbar">
+                            <span class="sb-left">PAGE 1 OF 1</span>
+                            <span class="sb-words" id="sb-words">0 WORDS</span>
+                            <span class="sb-msg" id="ws-statusbar">Click a paragraph, then use the ribbon. Cut/Copy/Paste, right-click, Ctrl+A and F-keys are off (exam rule).</span>
+                            <span class="sb-right">
+                                <svg width="13" height="11" viewBox="0 0 13 11" class="sb-view"><rect x="1" y="1" width="11" height="9" fill="none" stroke="#fff"/><path d="M4 3.5h5M4 6h5" stroke="#fff"/></svg>
+                                <svg width="13" height="11" viewBox="0 0 13 11" class="sb-view"><rect x="1" y="1" width="11" height="9" fill="none" stroke="#fff"/><path d="M4 2.5h5M4 5h5M4 7.5h5" stroke="#fff"/></svg>
+                                <span class="sb-zoom">&#8212;&#9898;&#8213;&#8213; 100%</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+        </section>
+
         <!-- RESULT -->
         <section class="panel" id="panel-result">
             <div class="result-hero">
@@ -489,7 +899,7 @@
                 </div>
             </div>
 
-            <div class="stat-grid">
+            <div class="stat-grid" id="res-stat-grid">
                 <div class="stat-card">Net Speed<b id="res-net">0 WPM</b></div>
                 <div class="stat-card">Gross Speed<b id="res-gross">0 WPM</b></div>
                 <div class="stat-card">Accuracy<b id="res-acc">0%</b></div>
@@ -954,15 +1364,16 @@
             $('res-badge-note').textContent = 'Need ' + MIN_MARKS.toFixed(2) + ' (Gen/OBC) · ' + MIN_MARKS_SCST.toFixed(2) + ' (SC/ST) · ' +
                 Math.max(0, Math.ceil((MIN_MARKS - r.marks) / R.cfg.perWord)) + ' more correct words to qualify';
         }
-        $('res-net').textContent = r.net.toFixed(1) + ' WPM';
-        $('res-gross').textContent = r.gross.toFixed(1) + ' WPM';
-        $('res-acc').textContent = r.acc.toFixed(1) + '%';
-        $('res-correct').textContent = r.correct;
-        $('res-wrong').textContent = r.wrong;
-        $('res-omitted').textContent = r.omitted;
-        $('res-total').textContent = r.total;
         const tm = Math.floor(r.secs / 60), ts2 = r.secs % 60;
-        $('res-time').textContent = tm + ':' + String(ts2).padStart(2, '0');
+        $('res-stat-grid').innerHTML =
+            '<div class="stat-card">Net Speed<b>' + r.net.toFixed(1) + ' WPM</b></div>' +
+            '<div class="stat-card">Gross Speed<b>' + r.gross.toFixed(1) + ' WPM</b></div>' +
+            '<div class="stat-card">Accuracy<b>' + r.acc.toFixed(1) + '%</b></div>' +
+            '<div class="stat-card">Correct Words<b style="color:var(--correct)">' + r.correct + '</b></div>' +
+            '<div class="stat-card">Wrong Words<b style="color:var(--error)">' + r.wrong + '</b></div>' +
+            '<div class="stat-card">Omitted<b>' + r.omitted + '</b></div>' +
+            '<div class="stat-card">Time Used<b>' + tm + ':' + String(ts2).padStart(2, '0') + '</b></div>' +
+            '<div class="stat-card">Words Target<b>' + r.total + '</b></div>';
 
         const head = $('report-head');
         head.innerHTML = r.lang === 'hi'
@@ -1011,16 +1422,17 @@
             return;
         }
         let html = '<div class="card-block" style="overflow-x:auto;"><table class="report"><thead><tr>' +
-            '<th>Date</th><th>Test</th><th>Marks /25</th><th>Net WPM</th><th>Accuracy</th><th>Correct</th><th>Result</th>' +
+            '<th>Date</th><th>Type</th><th>Test</th><th>Marks /25</th><th>Net WPM / Tasks</th><th>Accuracy</th><th>Result</th>' +
             '</tr></thead><tbody>';
         const sorted = store.results.slice().sort((a, b) => b.ts - a.ts);
         for (const r of sorted) {
+            const isEff = r.kind === 'eff';
             html += '<tr><td>' + new Date(r.ts).toLocaleString() + '</td>' +
+                '<td>' + (isEff ? 'Efficiency' : 'Speed') + '</td>' +
                 '<td>' + r.title + '</td>' +
                 '<td><b>' + r.marks.toFixed(2) + '</b></td>' +
-                '<td>' + r.net.toFixed(1) + '</td>' +
+                '<td>' + (isEff ? r.correct + '/' + r.total + ' tasks' : r.net.toFixed(1)) + '</td>' +
                 '<td>' + r.acc.toFixed(1) + '%</td>' +
-                '<td>' + r.correct + '/' + r.total + '</td>' +
                 '<td class="' + (r.marks >= MIN_MARKS ? 'st-ok' : 'st-bad') + '">' + (r.marks >= MIN_MARKS ? 'Qualified' : 'Not qualified') + '</td></tr>';
         }
         box.innerHTML = html + '</tbody></table></div>';
@@ -1116,14 +1528,19 @@
             if (R.timerId) clearInterval(R.timerId);
             R = null;
             el.examTab.style.display = 'none';
-            switchPanel('tests');
+            switchPanel('speed');
         }
     });
     $('retry-btn').addEventListener('click', () => {
-        const t = HI_TESTS.concat(EN_TESTS).find(x => x.id === (R && R.test.id));
+        if (lastResult && lastResult.kind === 'eff') {
+            const p = WORD_PAPERS.find(x => x.id === lastResult.testId);
+            if (p) loadPaper(p, 'exam');
+            return;
+        }
+        const t = HI_TESTS.concat(EN_TESTS).find(x => x.id === (lastResult && lastResult.testId));
         if (t) startTest(t);
     });
-    $('back-btn').addEventListener('click', () => { buildTestCards(); switchPanel('tests'); });
+    $('back-btn').addEventListener('click', () => { buildTestCards(); buildEffCards(); switchPanel(lastResult && lastResult.kind === 'eff' ? 'eff' : 'speed'); });
     $('clear-history-btn').addEventListener('click', () => {
         if (confirm('Delete all saved results on this device?')) {
             store.results = [];
@@ -1143,12 +1560,20 @@
                 R = null;
                 el.examTab.style.display = 'none';
             }
+            if (W && !W.ended && target !== 'wordsim') {
+                if (!confirm('A paper is running. Leave and discard it?')) return;
+                W.ended = true;
+                if (W.timerId) clearInterval(W.timerId);
+                W = null;
+                $('wordsim-tab').style.display = 'none';
+            }
             if (target === 'exam' && (!R || R.ended)) return;
+            if (target === 'wordsim' && (!W || W.ended)) return;
             switchPanel(target);
         });
     });
     $('logo-btn').addEventListener('click', () => {
-        document.querySelector('.nav-tab[data-target="tests"]').click();
+        document.querySelector('.nav-tab[data-target="eff"]').click();
     });
 
     // ── Theme & sound ──
@@ -1166,10 +1591,487 @@
         saveStore();
     });
 
+    // ── WORD EFFICIENCY PAPERS (RSSB Paper 3 pattern: 15 tasks, 25 marks, 10 min) ──
+    // Verifier helpers operate on the live DOM of the simulator.
+    const WS = {
+        P: i => document.querySelectorAll('#doc-body p')[i],
+        H: () => document.getElementById('doc-heading'),
+        T: () => document.getElementById('doc-table'),
+        head: () => document.getElementById('doc-header'),
+        foot: () => document.getElementById('doc-footer'),
+        page: () => document.getElementById('page'),
+        norm: s => (s || '').replace(/\s+/g, ' ').trim(),
+        textOk: (el, orig) => WS.norm(el.textContent) === WS.norm(orig),
+        headCells: () => document.querySelectorAll('#doc-table tr')[0].cells,
+        cell: (r, c) => document.querySelectorAll('#doc-table tr')[r].cells[c]
+    };
+
+    WS.textOkSanctioned = function (el, origText, fr) {
+        const t = WS.norm(el.textContent);
+        if (t === WS.norm(origText)) return true;
+        if (fr && t === WS.norm(origText.split(fr.find).join(fr.replace))) return true;
+        return false;
+    };
+
+    function wsParaTask(i, prop, val) {
+        return function (orig) {
+            const p = WS.P(i);
+            return p && p.dataset[prop] === val && WS.textOkSanctioned(p, orig.paras[i], orig.fr);
+        };
+    }
+
+    const WORD_PAPERS = [
+        {
+            id: 'w-1', title: 'Word Paper 1 · जल संरक्षण',
+            heading: 'जल संरक्षण',
+            paras: [
+                'जल जीवन का आधार है। बिना पानी के धरती पर जीवन की कल्पना भी नहीं की जा सकती। पानी का सही उपयोग और संरक्षण आज की सबसे बड़ी जरूरत है।',
+                'वर्षा जल संचयन से भूजल का स्तर बढ़ता है। हर घर की छत पर बरसात का पानी इकट्ठा करके उसे भूमि में उतारा जा सकता है। इससे कुएं और तालाब भरते हैं।',
+                'खेती में ड्रिप सिंचाई से पानी की बचत होती है। किसान भाइयों को फव्वारा सिंचाई अपनानी चाहिए। सरकार भी इसके लिए अनुदान देती है।',
+                'हर नागरिक का कर्तव्य है कि वह पानी की बर्बादी रोके। नल को ठीक रखें और जरूरत से ज्यादा पानी न बहाएं। जल है तो कल है।'
+            ],
+            table: { head: ['योजना', 'क्षेत्र', 'लाभार्थी'], rows: [['जल शक्ति अभियान', 'ग्रामीण', '1200'], ['सूजलाम योजना', 'शहरी', '850'], ['अटल भूजल योजना', 'कच्छार', '']] },
+            findReplace: { find: 'पानी', replace: 'जल', count: 3 },
+            tasks: [
+                { t: 'पहले पैराग्राफ को केंद्र (Center) में संरेखित करें।', m: 1, check: wsParaTask(0, 'align', 'center') },
+                { t: 'दूसरे पैराग्राफ को Bold करें।', m: 1, check: wsParaTask(1, 'bold', '1') },
+                { t: 'तीसरे पैराग्राफ की Line Spacing 1.5 करें।', m: 1, check: wsParaTask(2, 'linespacing', '1.5') },
+                { t: 'चौथे पैराग्राफ को Justify करें।', m: 1, check: wsParaTask(3, 'align', 'justify') },
+                { t: 'शीर्षक (Heading) का Font Size 16 करें।', m: 1, check: o => WS.H().dataset.size === '16pt' && WS.textOkSanctioned(WS.H(), o.heading, o.fr) },
+                { t: 'पहले पैराग्राफ का Font Color लाल (Red) करें।', m: 1, check: wsParaTask(0, 'color', '#dc2626') },
+                { t: 'दूसरे पैराग्राफ में Left Indent (0.5") बढ़ाएं।', m: 1, check: wsParaTask(1, 'indent', '1') },
+                { t: 'तीसरे पैराग्राफ को पीले (Yellow) रंग से Highlight करें।', m: 1, check: wsParaTask(2, 'highlight', '#fde047') },
+                { t: 'Header में "जल संरक्षण" लिखें।', m: 1, check: () => WS.norm(WS.head().textContent) === 'जल संरक्षण' },
+                { t: 'Footer में Page Number डालें।', m: 1, check: () => !!WS.foot().querySelector('.pagenum') },
+                { t: 'Find & Replace: पूरे document में "पानी" को "जल" से बदलें।', m: 3, check: () => !document.getElementById('doc-body').textContent.includes('पानी') && (document.getElementById('doc-body').textContent.match(/जल/g) || []).length >= 3 },
+                { t: 'Page की Orientation को Landscape करें।', m: 3, check: () => WS.page().classList.contains('landscape') },
+                { t: 'Table की Heading Row को Bold करें और Shade (हल्का पीला) करें।', m: 3, check: () => { const c = WS.headCells(); return c[0].style.fontWeight === 'bold' && c[0].style.backgroundColor !== ''; } },
+                { t: 'Table पर सभी Borders लगाएं।', m: 3, check: () => WS.T().classList.contains('tbl-bordered') },
+                { t: 'Table की तीसरी row के तीसरे cell में "500" लिखें।', m: 3, check: () => WS.norm(WS.cell(3, 2).textContent) === '500' }
+            ]
+        },
+        {
+            id: 'w-2', title: 'Word Paper 2 · डिजिटल साक्षरता',
+            heading: 'डिजिटल साक्षरता',
+            paras: [
+                'आज का युग डिजिटल युग है। कम्प्यूटर और इन्टरनेट का ज्ञान हर व्यक्ति के लिए आवश्यक हो गया है। डिजिटल साक्षरता से हर काम घर बैठे होता है।',
+                'सरकारी सेवाएं अब ऑनलाइन उपलब्ध हैं। बिल भरना, फॉर्म जमा करना और राशि का भुगतान अब कम्प्यूटर से मिनटों में हो जाता है।',
+                'गाँवों में भी लोग स्मार्टफोन से भुगतान करने लगे हैं। डिजिटल लेनदेन सुरक्षित और पारदर्शी होता है। इससे समय की बचत होती है।',
+                'सावधानी भी जरूरी है। पासवर्ड किसी को न बताएं और अनजान लिंक न खोलें। साइबर सुरक्षा के नियमों का पालन करें।'
+            ],
+            table: { head: ['सेवा', 'उपयोगकर्ता', 'वृद्धि'], rows: [['डिजिटल भुगतान', 'ग्रामीण', ''], ['ई-मित्र केन्द्र', 'शहरी', '60%'], ['ऑनलाइन शिक्षा', 'विद्यार्थी', '80%']] },
+            findReplace: { find: 'कम्प्यूटर', replace: 'कंप्यूटर', count: 2 },
+            tasks: [
+                { t: 'शीर्षक (Heading) को Bold करें।', m: 1, check: o => WS.H().dataset.bold === '1' && WS.textOkSanctioned(WS.H(), o.heading, o.fr) },
+                { t: 'पहले पैराग्राफ को Justify करें।', m: 1, check: wsParaTask(0, 'align', 'justify') },
+                { t: 'दूसरे पैराग्राफ को Italic करें।', m: 1, check: wsParaTask(1, 'italic', '1') },
+                { t: 'तीसरे पैराग्राफ की Line Spacing 2.0 करें।', m: 1, check: wsParaTask(2, 'linespacing', '2') },
+                { t: 'चौथे पैराग्राफ को Underline करें।', m: 1, check: wsParaTask(3, 'underline', '1') },
+                { t: 'शीर्षक का Font Color नीला (Blue) करें।', m: 1, check: o => WS.H().dataset.color === '#2563eb' && WS.textOkSanctioned(WS.H(), o.heading, o.fr) },
+                { t: 'पहले पैराग्राफ के बाद Space After 12 pt करें।', m: 1, check: wsParaTask(0, 'spaceafter', '12pt') },
+                { t: 'चौथे पैराग्राफ का Font Size 14 करें।', m: 1, check: wsParaTask(3, 'size', '14pt') },
+                { t: 'Header में "डिजिटल साक्षरता" लिखें।', m: 1, check: () => WS.norm(WS.head().textContent) === 'डिजिटल साक्षरता' },
+                { t: 'Footer में "परीक्षा 2026" लिखें।', m: 1, check: () => WS.foot().textContent.includes('परीक्षा 2026') },
+                { t: 'Find & Replace: पूरे document में "कम्प्यूटर" को "कंप्यूटर" से बदलें।', m: 3, check: () => !document.getElementById('doc-body').textContent.includes('कम्प्यूटर') && (document.getElementById('doc-body').textContent.match(/कंप्यूटर/g) || []).length >= 2 },
+                { t: 'Page के Margins को Narrow करें।', m: 3, check: () => WS.page().classList.contains('margins-narrow') },
+                { t: 'Page Color हल्का नीला (Light Blue) करें।', m: 3, check: () => WS.page().dataset.pagecolor === '#dbeafe' },
+                { t: 'Table की Heading Row को Bold और Center करें।', m: 3, check: () => { const c = WS.headCells(); return c[0].style.fontWeight === 'bold' && c[0].style.textAlign === 'center'; } },
+                { t: 'Table की पहली row के तीसरे cell में "75%" लिखें।', m: 3, check: () => WS.norm(WS.cell(1, 2).textContent) === '75%' }
+            ]
+        }
+    ];
+
+    // ── WORD SIM ENGINE ──
+    let W = null; // { paper, mode, startTs, timerId, ended, active }
+
+    function buildEffCards() {
+        const box = $('word-tests');
+        box.innerHTML = '';
+        for (const p of WORD_PAPERS) {
+            const card = document.createElement('div');
+            card.className = 'test-card';
+            const best = bestFor(p.id);
+            card.innerHTML =
+                '<h3>' + p.title + '</h3>' +
+                '<div class="test-meta">' +
+                    '<span class="chip">Word 2013</span>' +
+                    '<span class="chip neutral">15 tasks</span>' +
+                    '<span class="chip neutral">25 marks</span>' +
+                    '<span class="chip neutral">10 min</span>' +
+                '</div>' +
+                '<div class="best-line">' + (best
+                    ? 'Best: <strong>' + best.marks.toFixed(2) + ' / 25</strong> · ' + new Date(best.ts).toLocaleDateString()
+                    : 'Not attempted yet') + '</div>';
+            const row = document.createElement('div');
+            row.style.cssText = 'display:flex; gap:8px;';
+            const bPractice = document.createElement('button');
+            bPractice.className = 'btn secondary block';
+            bPractice.textContent = 'Practice';
+            bPractice.addEventListener('click', () => loadPaper(p, 'practice'));
+            const bExam = document.createElement('button');
+            bExam.className = 'btn block';
+            bExam.textContent = 'Exam (10 min)';
+            bExam.addEventListener('click', () => loadPaper(p, 'exam'));
+            row.appendChild(bPractice); row.appendChild(bExam);
+            card.appendChild(row);
+            box.appendChild(card);
+        }
+    }
+
+    function loadPaper(paper, mode) {
+        W = { paper, mode, startTs: null, timerId: null, ended: false, active: null };
+        $('ws-title').textContent = paper.title;
+        $('ws-subtitle').textContent = (mode === 'exam'
+            ? 'Exam mode · 10:00 countdown starts on your first action · no live feedback'
+            : 'Practice mode · tasks tick as you complete them · submit anytime');
+        $('ws-timer').textContent = mode === 'exam' ? '10:00' : '0:00';
+        $('ws-timer').classList.remove('low');
+
+        // document
+        const H = $('doc-heading'); H.textContent = paper.heading; H.removeAttribute('style'); H.dataset.x = ''; for (const k in H.dataset) delete H.dataset[k];
+        const body = $('doc-body'); body.innerHTML = '';
+        paper.paras.forEach((t, i) => {
+            const p = document.createElement('p');
+            p.textContent = t;
+            p.dataset.pidx = i;
+            body.appendChild(p);
+        });
+        const tbl = $('doc-table');
+        tbl.className = 'doc-table'; tbl.removeAttribute('style');
+        let th = '<tr>' + paper.table.head.map(h => '<td>' + h + '</td>').join('') + '</tr>';
+        let trs = paper.table.rows.map(r => '<tr>' + r.map(c => '<td contenteditable="true" spellcheck="false">' + c + '</td>').join('') + '</tr>').join('');
+        tbl.innerHTML = th + trs;
+        const page = $('page');
+        page.className = 'page'; page.removeAttribute('style'); for (const k in page.dataset) delete page.dataset[k];
+        const hd = $('doc-header'), ft = $('doc-footer');
+        hd.textContent = ''; ft.textContent = '';
+        hd.contentEditable = 'false'; ft.contentEditable = 'false';
+        hd.classList.remove('editing'); ft.classList.remove('editing');
+        $('find-input').value = ''; $('replace-input').value = '';
+
+        // task list
+        const list = $('task-list');
+        list.innerHTML = '';
+        paper.tasks.forEach((t, i) => {
+            const li = document.createElement('li');
+            li.innerHTML = t.t + ' <span class="tmarks">[' + t.m + ' mark' + (t.m > 1 ? 's' : '') + ']</span>';
+            list.appendChild(li);
+        });
+        $('ws-marks-live').textContent = mode === 'exam' ? 'Exam mode - marks on submit' : 'Marks: 0 / 25';
+
+        $('wordsim-tab').style.display = '';
+        switchPanel('wordsim');
+    }
+
+    function wsEnsureTimer() {
+        if (!W || W.startTs) return;
+        W.startTs = Date.now();
+        W.timerId = setInterval(wsTick, 500);
+    }
+
+    function wsTick() {
+        if (!W || W.ended) return;
+        const el2 = (Date.now() - W.startTs) / 1000;
+        if (W.mode === 'exam') {
+            const left = Math.max(0, 600 - el2);
+            const m = Math.floor(left / 60), s = Math.floor(left % 60);
+            $('ws-timer').textContent = m + ':' + String(s).padStart(2, '0');
+            if (left <= 60) $('ws-timer').classList.add('low');
+            if (left <= 0) submitPaper('timeup');
+        } else {
+            const m = Math.floor(el2 / 60), s = Math.floor(el2 % 60);
+            $('ws-timer').textContent = m + ':' + String(s).padStart(2, '0');
+        }
+    }
+
+    function wsRunChecks() {
+        if (!W) return { marks: 0, passed: [] };
+        const orig = { paras: W.paper.paras, heading: W.paper.heading, fr: W.paper.findReplace };
+        let marks = 0; const passed = [];
+        W.paper.tasks.forEach((t, i) => {
+            let ok = false;
+            try { ok = !!t.check(orig); } catch (e) { ok = false; }
+            if (ok) marks += t.m;
+            passed.push(ok);
+            if (W.mode === 'practice') {
+                const li = $('task-list').children[i];
+                if (li) li.classList.toggle('done', ok);
+            }
+        });
+        if (W.mode === 'practice') $('ws-marks-live').textContent = 'Marks: ' + marks + ' / 25';
+        return { marks, passed };
+    }
+
+    function wsSetActive(el2) {
+        document.querySelectorAll('.active-para').forEach(x => x.classList.remove('active-para'));
+        W.active = el2;
+        if (el2) el2.classList.add('active-para');
+    }
+
+    function wsSelInDoc() {
+        const sel = window.getSelection();
+        if (!sel || sel.isCollapsed || !sel.rangeCount) return null;
+        const node = sel.anchorNode;
+        if (!node) return null;
+        const host = node.nodeType === 3 ? node.parentNode : node;
+        if (host.closest && (host.closest('#doc-body') || host.closest('#doc-heading') || host.closest('#doc-footer') || host.closest('#doc-header') || host.closest('#doc-table'))) return sel;
+        return null;
+    }
+
+    function wsParaApply(prop, styleProp, val) {
+        const t = W.active;
+        if (!t) { wsStatus('पहले किसी पैराग्राफ या शीर्षक पर क्लिक करें (click a paragraph first)'); return; }
+        t.style[styleProp] = val;
+        t.dataset[prop] = val;
+        wsRunChecks();
+    }
+
+    function wsStatus(msg) {
+        $('ws-statusbar').textContent = msg;
+    }
+
+    function wsCommand(cmd, val) {
+        if (!W || W.ended) return;
+        wsEnsureTimer();
+        const sel = wsSelInDoc();
+        switch (cmd) {
+            case 'bold':
+                if (sel) { document.execCommand('bold'); }
+                else if (W.active) { const on = W.active.dataset.bold === '1'; W.active.style.fontWeight = on ? '' : 'bold'; W.active.dataset.bold = on ? '' : '1'; }
+                else { wsStatus('Select text or click a paragraph first'); return; }
+                break;
+            case 'italic':
+                if (sel) { document.execCommand('italic'); }
+                else if (W.active) { const on = W.active.dataset.italic === '1'; W.active.style.fontStyle = on ? '' : 'italic'; W.active.dataset.italic = on ? '' : '1'; }
+                else { wsStatus('Select text or click a paragraph first'); return; }
+                break;
+            case 'underline':
+                if (sel) { document.execCommand('underline'); }
+                else if (W.active) { const on = W.active.dataset.underline === '1'; W.active.style.textDecoration = on ? '' : 'underline'; W.active.dataset.underline = on ? '' : '1'; }
+                else { wsStatus('Select text or click a paragraph first'); return; }
+                break;
+            case 'strike':
+                if (sel) document.execCommand('strikeThrough');
+                else if (W.active) { const on = W.active.dataset.strike === '1'; W.active.style.textDecoration = on ? '' : 'line-through'; W.active.dataset.strike = on ? '' : '1'; }
+                break;
+            case 'size': if (val) wsParaApply('size', 'fontSize', val); break;
+            case 'color': if (val) wsParaApply('color', 'color', val); break;
+            case 'highlight': if (val) wsParaApply('highlight', 'background', val); break;
+            case 'align-left': wsParaApply('align', 'textAlign', 'left'); break;
+            case 'align-center': wsParaApply('align', 'textAlign', 'center'); break;
+            case 'align-right': wsParaApply('align', 'textAlign', 'right'); break;
+            case 'align-justify': wsParaApply('align', 'textAlign', 'justify'); break;
+            case 'linespacing': if (val) wsParaApply('linespacing', 'lineHeight', val); break;
+            case 'spaceafter': if (val) wsParaApply('spaceafter', 'marginBottom', val); break;
+            case 'indent': {
+                const t = W.active;
+                if (!t) { wsStatus('Click a paragraph first'); return; }
+                const n = Math.min(2, (parseInt(t.dataset.indent || '0', 10) + 1));
+                t.dataset.indent = String(n);
+                t.style.paddingLeft = (n * 48) + 'px';
+                break;
+            }
+            case 'replaceall': {
+                const f = $('find-input').value, r = $('replace-input').value;
+                if (!f) { wsStatus('Type a word in Find first'); return; }
+                const host = $('doc-body');
+                const walker = document.createTreeWalker(host, NodeFilter.SHOW_TEXT);
+                const nodes = [];
+                while (walker.nextNode()) nodes.push(walker.currentNode);
+                let count = 0;
+                for (const n of nodes) {
+                    if (n.nodeValue.includes(f)) {
+                        count += n.nodeValue.split(f).length - 1;
+                        n.nodeValue = n.nodeValue.split(f).join(r);
+                    }
+                }
+                wsStatus('Replace All: ' + count + ' replacement' + (count === 1 ? '' : 's') + ' made');
+                break;
+            }
+            case 'edit-header': {
+                const hd = $('doc-header');
+                hd.contentEditable = hd.contentEditable === 'true' ? 'false' : 'true';
+                hd.classList.toggle('editing', hd.contentEditable === 'true');
+                if (hd.contentEditable === 'true') { hd.focus(); wsStatus('Header खुला है - टाइप करें, फिर बाहर क्लिक करें'); }
+                break;
+            }
+            case 'edit-footer': {
+                const ft = $('doc-footer');
+                ft.contentEditable = ft.contentEditable === 'true' ? 'false' : 'true';
+                ft.classList.toggle('editing', ft.contentEditable === 'true');
+                if (ft.contentEditable === 'true') { ft.focus(); wsStatus('Footer खुला है - टाइप करें, फिर बाहर क्लिक करें'); }
+                break;
+            }
+            case 'page-number': {
+                const ft = $('doc-footer');
+                if (!ft.querySelector('.pagenum')) {
+                    const sp = document.createElement('span');
+                    sp.className = 'pagenum';
+                    sp.textContent = '1';
+                    ft.appendChild(sp);
+                    wsStatus('Page number inserted in footer');
+                }
+                break;
+            }
+            case 'page-break': {
+                const t = W.active;
+                if (!t || !t.matches('#doc-body p')) { wsStatus('Click a paragraph first'); return; }
+                t.classList.toggle('page-break-before');
+                break;
+            }
+            case 'margins': {
+                const page = $('page');
+                page.classList.remove('margins-narrow', 'margins-wide');
+                if (val === 'narrow') page.classList.add('margins-narrow');
+                if (val === 'wide') page.classList.add('margins-wide');
+                break;
+            }
+            case 'orientation': $('page').classList.toggle('landscape'); break;
+            case 'pagecolor': if (val) { $('page').style.background = val; $('page').dataset.pagecolor = val; } break;
+            case 'page-border': $('page').classList.toggle('page-bordered'); break;
+            case 'tbl-borders': $('doc-table').classList.toggle('tbl-bordered'); break;
+            case 'tbl-head-bold': case 'tbl-head-shade': case 'tbl-head-center': {
+                const cells = document.querySelectorAll('#doc-table tr')[0].cells;
+                for (const c of cells) {
+                    if (cmd === 'tbl-head-bold') c.style.fontWeight = c.style.fontWeight === 'bold' ? '' : 'bold';
+                    if (cmd === 'tbl-head-shade') c.style.background = c.style.background ? '' : '#fef08a';
+                    if (cmd === 'tbl-head-center') c.style.textAlign = c.style.textAlign === 'center' ? '' : 'center';
+                }
+                break;
+            }
+        }
+        wsRunChecks();
+    }
+
+    function submitPaper(reason) {
+        if (!W || W.ended) return;
+        W.ended = true;
+        if (W.timerId) clearInterval(W.timerId);
+        const { marks, passed } = wsRunChecks();
+        const secs = W.startTs ? Math.round((Date.now() - W.startTs) / 1000) : 0;
+        const passedCount = passed.filter(Boolean).length;
+        const result = {
+            kind: 'eff', ts: Date.now(), testId: W.paper.id, title: W.paper.title, lang: 'hi',
+            reason, secs, total: W.paper.tasks.length, correct: passedCount,
+            wrong: W.paper.tasks.length - passedCount, omitted: 0,
+            net: 0, gross: 0, acc: passedCount / W.paper.tasks.length * 100,
+            marks, passed
+        };
+        lastResult = result;
+        store.results.push(result);
+        saveStore();
+        if (marks >= MIN_MARKS) sound.unlock();
+        renderEffResult(result);
+        switchPanel('result');
+        $('wordsim-tab').style.display = 'none';
+    }
+
+    function renderEffResult(r) {
+        $('res-test-name').textContent = r.title + ' · ' + (r.reason === 'timeup' ? 'Time over' : r.reason === 'practice' ? 'Practice submit' : 'Submitted');
+        $('res-marks').textContent = r.marks.toFixed(2);
+        const badge = $('res-badge');
+        if (r.marks >= MIN_MARKS) { badge.textContent = 'Qualified'; badge.className = 'qual-badge pass'; }
+        else { badge.textContent = 'Not Qualified'; badge.className = 'qual-badge fail'; }
+        $('res-badge-note').textContent = r.marks >= MIN_MARKS
+            ? 'Need ' + MIN_MARKS.toFixed(2) + ' (Gen/OBC) · ' + MIN_MARKS_SCST.toFixed(2) + ' (SC/ST) · cleared by ' + (r.marks - MIN_MARKS).toFixed(2) + ' marks'
+            : 'Need ' + MIN_MARKS.toFixed(2) + ' (Gen/OBC) · ' + MIN_MARKS_SCST.toFixed(2) + ' (SC/ST) · ' + (MIN_MARKS - r.marks).toFixed(2) + ' marks short';
+        $('res-stat-grid').innerHTML =
+            '<div class="stat-card">Tasks Done<b>' + r.correct + ' / ' + r.total + '</b></div>' +
+            '<div class="stat-card">Task Accuracy<b>' + r.acc.toFixed(0) + '%</b></div>' +
+            '<div class="stat-card">Time Used<b>' + Math.floor(r.secs / 60) + ':' + String(r.secs % 60).padStart(2, '0') + '</b></div>' +
+            '<div class="stat-card">Mode<b style="font-size:1rem;">' + (W && W.mode === 'exam' ? 'Exam' : 'Practice') + '</b></div>';
+        $('report-head').innerHTML = '<th>#</th><th>Task</th><th>Marks</th><th>Status</th>';
+        const body = $('report-body');
+        body.innerHTML = '';
+        W.paper.tasks.forEach((t, i) => {
+            const ok = r.passed[i];
+            const tr = document.createElement('tr');
+            tr.innerHTML = '<td>' + (i + 1) + '</td><td class="deva">' + t.t + '</td>' +
+                '<td>' + t.m + '</td>' +
+                '<td class="' + (ok ? 'st-ok' : 'st-bad') + '">' + (ok ? '✓ +' + t.m : '✗ 0') + '</td>';
+            body.appendChild(tr);
+        });
+        $('res-report-sub').textContent = r.correct + ' of ' + r.total + ' tasks correct';
+    }
+
+    // ── wordsim wiring ──
+    document.querySelectorAll('.rtab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.rtab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            ['home', 'insert', 'design', 'layout', 'table'].forEach(n => {
+                $('ribbon-' + n).style.display = tab.dataset.rtab === n ? '' : 'none';
+            });
+        });
+    });
+    document.querySelectorAll('#panel-wordsim [data-cmd]').forEach(btn => {
+        btn.addEventListener('click', () => wsCommand(btn.dataset.cmd, btn.value || undefined));
+        if (btn.tagName === 'SELECT') {
+            btn.addEventListener('change', () => { wsCommand(btn.dataset.cmd, btn.value); btn.value = ''; });
+        }
+    });
+    $('doc-body').addEventListener('click', (e) => {
+        const p = e.target.closest('#doc-body p');
+        if (p && W && !W.ended) wsSetActive(p);
+    });
+    $('doc-heading').addEventListener('click', () => { if (W && !W.ended) wsSetActive($('doc-heading')); });
+    $('doc-table').addEventListener('click', () => { if (W && !W.ended) wsSetActive(null); wsEnsureTimer(); });
+    // contextual TABLE TOOLS tab
+    const ttBand = document.getElementById('tt-band');
+    function ttShow(on) {
+        ttBand.style.display = on ? '' : 'none';
+        if (on) {
+            document.querySelectorAll('.rtab').forEach(t => t.classList.remove('active'));
+            const t = ttBand.querySelector('.rtab');
+            t.classList.add('active');
+            ['home', 'insert', 'design', 'layout', 'table'].forEach(n => { $('ribbon-' + n).style.display = n === 'table' ? '' : 'none'; });
+        } else {
+            const t = ttBand.querySelector('.rtab');
+            if (t.classList.contains('active')) {
+                t.classList.remove('active');
+                document.querySelector('.rtab[data-rtab="home"]').classList.add('active');
+                ['home', 'insert', 'design', 'layout', 'table'].forEach(n => { $('ribbon-' + n).style.display = n === 'home' ? '' : 'none'; });
+            }
+        }
+    }
+    $('doc-table').addEventListener('click', () => { if (W && !W.ended) ttShow(true); });
+    $('doc-body').addEventListener('click', () => ttShow(false));
+    $('doc-heading').addEventListener('click', () => ttShow(false));
+    // live word count in status bar
+    const wcEl = document.getElementById('sb-words');
+    new MutationObserver(() => {
+        const t = ($('doc-heading').textContent + ' ' + $('doc-body').textContent).trim();
+        wcEl.textContent = (t ? t.split(/\s+/).length : 0) + ' WORDS';
+    }).observe($('page'), { childList: true, subtree: true, characterData: true });
+    ['doc-body', 'doc-heading', 'doc-header', 'doc-footer', 'doc-table'].forEach(id => {
+        const node = $(id);
+        node.addEventListener('input', () => { if (W && !W.ended) { wsEnsureTimer(); wsRunChecks(); } });
+        node.addEventListener('paste', e => e.preventDefault());
+        node.addEventListener('keydown', (e) => {
+            if (/^F\d{1,2}$/.test(e.key)) { e.preventDefault(); return; }
+            if ((e.ctrlKey || e.metaKey) && ['a', 'c', 'x', 'v'].includes(e.key.toLowerCase())) { e.preventDefault(); return; }
+        });
+    });
+    document.querySelector('.word-win').addEventListener('contextmenu', e => e.preventDefault());
+    $('doc-header').addEventListener('blur', () => { const hd = $('doc-header'); hd.contentEditable = 'false'; hd.classList.remove('editing'); wsRunChecks(); });
+    $('doc-footer').addEventListener('blur', () => { const ft = $('doc-footer'); ft.contentEditable = 'false'; ft.classList.remove('editing'); wsRunChecks(); });
+    $('ws-submit-btn').addEventListener('click', () => { if (W && !W.ended) submitPaper(W.mode === 'practice' ? 'practice' : 'submitted'); });
+    $('ws-quit-btn').addEventListener('click', () => {
+        if (!W || W.ended) return;
+        if (confirm('Quit this paper? Your work will not be saved.')) {
+            W.ended = true;
+            if (W.timerId) clearInterval(W.timerId);
+            W = null;
+            $('wordsim-tab').style.display = 'none';
+            switchPanel('eff');
+        }
+    });
+
     // ── Test hook (used only by headless harnesses) ──
     if (typeof window !== 'undefined' && window.__EO_TEST__) {
         window.__EO = {
             HI_TESTS, EN_TESTS, unicodeToKrutiDev, startTest,
+            WORD_PAPERS, loadPaper, wsCommand, submitPaper, wsRunChecks, getW: () => W,
             submit: () => { if (R && !R.ended) endTest('submitted'); },
             getState: () => {
                 const c = R ? counts() : { correct: 0, wrong: 0, skipped: 0 };
@@ -1183,6 +2085,7 @@
     applyTheme(store.theme || 'dark');
     updateSoundIcon();
     buildTestCards();
+    buildEffCards();
 })();
 
     </script>
