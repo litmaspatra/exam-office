@@ -1,22 +1,94 @@
-# Exam Office
+# ExamOffice — Word Efficiency Trainer
 
-RSSB Hindi/English typing test simulator (new pattern), single-file app.
+A free, offline Windows desktop app for practising RSSB computer efficiency tests.
+Launches real Microsoft Word with a preloaded exam document, tracks your progress live,
+and marks your saved work automatically.
 
-- Open `index.html` in any browser (double-click) - no server needed.
-- 3 Hindi tests (DevLys-010 style, Remington layout) + 2 English tests (QWERTY), 10-minute countdown.
-- Scoring per the new RSSB pattern: marks = correct words x 0.0625 (Hindi) / 0.05 (English), max 25, no negative marking; qualifying 9.00 (Gen/OBC) / 7.75 (SC/ST) per paper.
-- Soni-style result report with QUALIFIED badge, net/gross WPM, word-by-word table, and saved history (My Results).
+**No internet required. No account. No subscription.**
 
 ---
 
-## Desktop App (Word Efficiency Trainer)
+## Download
 
-Windows desktop companion for the RSSB Clerk Grade-II / Junior Assistant Phase-II **Word Efficiency Test (Paper 3)** that tests you inside **real Microsoft Word**.
+Get the latest installer-free executable from [Releases](https://github.com/litmaspatra/exam-office/releases/latest).
 
-- **What it is:** Launches real Microsoft Word with a pre-loaded 15-task exam `.docx`, runs an official 10-minute countdown, and auto-marks your saved document out of 25 (MS Word must be installed).
-- **Download:** Download `ExamOffice.exe` directly from the [GitHub Releases](https://github.com/litmaspatra/exam-office/releases) page (tag `v1.0.0`).
-- **Run from source:** Run `desktop\setup.bat` once to install dependencies, then double-click `desktop\run.bat` to launch.
-- **Build the EXE yourself:** Run `desktop\build.bat` (creates a clean virtual environment, installs dependencies + PyInstaller, and builds `desktop\dist\ExamOffice.exe`).
-- **Modes:**
-  - *Practice mode:* Auto-detects your saves (`Ctrl+S`) in real-time and ticks tasks green live as you complete them.
-  - *Exam mode:* Strict 10-minute exam simulation without live hints; automatically evaluates your final document upon submission or time-up.
+---
+
+## Requirements
+
+- Windows 10 / 11
+- Microsoft Word (2013 or later, any edition — 365 / 2021 / 2019 / 2016 / 2013)
+- No installation needed; run `ExamOffice.exe` directly
+
+---
+
+## Quick Start
+
+1. Download `ExamOffice.exe` from the Releases page.
+2. Double-click to launch.
+3. Select a paper (**Word Paper 1** or **Word Paper 2**).
+4. Choose **Practice** (live checkmarks as you save) or **Exam** (marks calculated upon test completion).
+5. Complete tasks in Microsoft Word, pressing **Ctrl+S** after each one.
+6. Click **Finish** or wait for the timer to expire — your score appears instantly.
+
+---
+
+## Run from Source
+
+```bat
+git clone https://github.com/litmaspatra/exam-office.git
+cd exam-office
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r desktop\requirements.txt
+python desktop\exam_office.py
+```
+
+Requires Python 3.10+.
+
+---
+
+## Build the Executable
+
+```bat
+cd desktop
+build.bat
+```
+
+Output: `desktop\dist\ExamOffice.exe`
+
+---
+
+## Papers
+
+Two built-in papers (15 tasks, 25 marks each):
+
+| Paper | Topic |
+|---|---|
+| Word Paper 1 | जल संरक्षण |
+| Word Paper 2 | डिजिटल साक्षरता |
+
+To add your own paper, see [desktop/PAPERS.md](desktop/PAPERS.md).
+
+---
+
+## Scoring
+
+- **Pass**: ≥ 9.0 marks
+- **Pass (SC/ST)**: ≥ 7.75 marks
+- Marks shown per task with hints on failure.
+
+---
+
+## App Data
+
+All attempt files, logs, and history are stored in:
+```
+%LOCALAPPDATA%\ExamOffice\
+```
+
+---
+
+## License
+
+MIT License — see [LICENSE](LICENSE)
