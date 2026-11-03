@@ -1,0 +1,76 @@
+# -*- coding: utf-8 -*-
+"""RSSB Clerk Grade-II / Junior Assistant Phase-II - Word efficiency papers.
+15 tasks, 25 marks, 10 minutes, minimum 9 (SC/ST 7.75) - same pattern as the web build."""
+
+PAPERS = [
+    {
+        'id': 'w-1',
+        'title': 'Word Paper 1 - जल संरक्षण',
+        'heading': 'जल संरक्षण',
+        'paras': [
+            'जल जीवन का आधार है। बिना पानी के धरती पर जीवन की कल्पना भी नहीं की जा सकती। पानी का सही उपयोग और संरक्षण आज की सबसे बड़ी जरूरत है।',
+            'वर्षा जल संचयन से भूजल का स्तर बढ़ता है। हर घर की छत पर बरसात का पानी इकट्ठा करके उसे भूमि में उतारा जा सकता है। इससे कुएं और तालाब भरते हैं।',
+            'खेती में ड्रिप सिंचाई से पानी की बचत होती है। किसान भाइयों को फव्वारा सिंचाई अपनानी चाहिए। सरकार भी इसके लिए अनुदान देती है।',
+            'हर नागरिक का कर्तव्य है कि वह पानी की बर्बादी रोके। नल को ठीक रखें और जरूरत से ज्यादा पानी न बहाएं। जल है तो कल है।',
+        ],
+        'table': {
+            'head': ['योजना', 'क्षेत्र', 'लाभार्थी'],
+            'rows': [['जल शक्ति अभियान', 'ग्रामीण', '1200'],
+                     ['सूजलाम योजना', 'शहरी', '850'],
+                     ['अटल भूजल योजना', 'कच्छार', '']],
+        },
+        'find_replace': {'find': 'पानी', 'replace': 'जल', 'min_count': 3},
+        'tasks': [
+            {'t': 'पहले पैराग्राफ को Justify करें।', 'm': 1, 'kind': 'align', 'para': 0, 'val': 'justify'},
+            {'t': 'दूसरे पैराग्राफ में First Line Indent 0.5" लगाएं।', 'm': 1, 'kind': 'first_line_indent', 'para': 1, 'val': 0.5},
+            {'t': 'तीसरे पैराग्राफ की Line Spacing 1.5 करें।', 'm': 1, 'kind': 'linespacing', 'para': 2, 'val': 1.5},
+            {'t': 'चौथे पैराग्राफ को Bold करें।', 'm': 1, 'kind': 'bold', 'para': 3},
+            {'t': 'शीर्षक (Heading) को केंद्र (Center) में करें और Font Size 16 करें।', 'm': 2, 'kind': 'heading_center_size', 'val': 16},
+            {'t': 'दूसरे पैराग्राफ का Font Color लाल (Red) करें।', 'm': 1, 'kind': 'color', 'para': 1, 'val': ['FF0000']},
+            {'t': 'चौथे पैराग्राफ में "जल है तो कल है" को Italic करें।', 'm': 2, 'kind': 'phrase_italic', 'para': 3, 'val': 'जल है तो कल है'},
+            {'t': 'तीसरे पैराग्राफ के बाद Space After 12 pt करें।', 'm': 1, 'kind': 'spaceafter', 'para': 2, 'val': 12},
+            {'t': 'Header में "जल संरक्षण" लिखें।', 'm': 1, 'kind': 'header_text', 'val': 'जल संरक्षण'},
+            {'t': 'Footer में Page Number डालें।', 'm': 1, 'kind': 'footer_pagenum'},
+            {'t': 'Find & Replace: पूरे document में "पानी" को "जल" से बदलें।', 'm': 3, 'kind': 'find_replace'},
+            {'t': 'Page की Orientation Landscape करें और Margins Narrow (0.5") करें।', 'm': 3, 'kind': 'orient_margins_narrow'},
+            {'t': 'तीसरे पैराग्राफ को हल्के हरे (Light Green) रंग से Shade करें।', 'm': 1, 'kind': 'para_shading', 'para': 2},
+            {'t': 'Table की Heading Row को Bold करें और Shade (हल्का पीला) करें।', 'm': 3, 'kind': 'table_head_bold_shade'},
+            {'t': 'Table पर सभी Borders लगाएं और तीसरी row के तीसरे cell में "500" लिखें।', 'm': 3, 'kind': 'borders_and_cell', 'row': 3, 'col': 2, 'val': '500'},
+        ],
+    },
+    {
+        'id': 'w-2',
+        'title': 'Word Paper 2 - डिजिटल साक्षरता',
+        'heading': 'डिजिटल साक्षरता',
+        'paras': [
+            'आज का युग डिजिटल युग है। कम्प्यूटर और इन्टरनेट का ज्ञान हर व्यक्ति के लिए आवश्यक हो गया है। डिजिटल साक्षरता से हर काम घर बैठे होता है।',
+            'सरकारी सेवाएं अब ऑनलाइन उपलब्ध हैं। बिल भरना, फॉर्म जमा करना और राशि का भुगतान अब कम्प्यूटर से मिनटों में हो जाता है।',
+            'गाँवों में भी लोग स्मार्टफोन से भुगतान करने लगे हैं। डिजिटल लेनदेन सुरक्षित और पारदर्शी होता है। इससे समय की बचत होती है।',
+            'सावधानी भी जरूरी है। पासवर्ड किसी को न बताएं और अनजान लिंक न खोलें। साइबर सुरक्षा के नियमों का पालन करें।',
+        ],
+        'table': {
+            'head': ['सेवा', 'उपयोगकर्ता', 'वृद्धि'],
+            'rows': [['डिजिटल भुगतान', 'ग्रामीण', ''],
+                     ['ई-मित्र केन्द्र', 'शहरी', '60%'],
+                     ['ऑनलाइन शिक्षा', 'विद्यार्थी', '80%']],
+        },
+        'find_replace': {'find': 'कम्प्यूटर', 'replace': 'कंप्यूटर', 'min_count': 2},
+        'tasks': [
+            {'t': 'शीर्षक (Heading) को Bold करें और Font Color नीला (Blue) करें।', 'm': 2, 'kind': 'heading_bold_color', 'val': ['0000FF', '0070C0', '2563EB', '2E74B5']},
+            {'t': 'पहले पैराग्राफ को केंद्र (Center) में संरेखित करें।', 'm': 1, 'kind': 'align', 'para': 0, 'val': 'center'},
+            {'t': 'दूसरे पैराग्राफ को Italic करें।', 'm': 1, 'kind': 'italic', 'para': 1},
+            {'t': 'तीसरे पैराग्राफ की Line Spacing 2.0 करें।', 'm': 1, 'kind': 'linespacing', 'para': 2, 'val': 2.0},
+            {'t': 'चौथे पैराग्राफ में Left Indent 0.5" बढ़ाएं।', 'm': 1, 'kind': 'indent', 'para': 3, 'val': 0.5},
+            {'t': 'दूसरे पैराग्राफ में "ऑनलाइन" शब्द को Double Underline करें।', 'm': 2, 'kind': 'word_double_underline', 'para': 1, 'val': 'ऑनलाइन'},
+            {'t': 'चौथे पैराग्राफ को पीले (Yellow) रंग से Highlight करें।', 'm': 1, 'kind': 'highlight', 'para': 3, 'val': 'yellow'},
+            {'t': 'पहले पैराग्राफ को नए Page से शुरू करें (Page Break Before)।', 'm': 2, 'kind': 'page_break_before', 'para': 0},
+            {'t': 'Header में "डिजिटल साक्षरता" लिखें।', 'm': 1, 'kind': 'header_text', 'val': 'डिजिटल साक्षरता'},
+            {'t': 'Footer में "परीक्षा 2026" लिखें और "2026" को Bold करें।', 'm': 2, 'kind': 'footer_text_bold', 'val': 'परीक्षा 2026', 'word': '2026'},
+            {'t': 'Find & Replace: पूरे document में "कम्प्यूटर" को "कंप्यूटर" से बदलें।', 'm': 3, 'kind': 'find_replace'},
+            {'t': 'Page Color हल्का नीला (Light Blue) करें।', 'm': 2, 'kind': 'page_color'},
+            {'t': 'Page Border लगाएं।', 'm': 2, 'kind': 'page_border'},
+            {'t': 'Table की Heading Row को Bold और Center करें।', 'm': 3, 'kind': 'table_head_bold_center'},
+            {'t': 'Table की पहली row के तीसरे cell में "75%" लिखें।', 'm': 1, 'kind': 'cell_text', 'row': 1, 'col': 2, 'val': '75%'},
+        ],
+    },
+]
