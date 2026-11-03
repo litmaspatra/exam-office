@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+.venv/
+venv/
+ENV/
+
+# PyInstaller / Build outputs
+build/
+dist/
+desktop/build/
+desktop/dist/
+*.manifest
+*.spec.bak
+
+# App runtime data & workspace
+workspace/
+desktop/workspace/
+examoffice_history.json
+*.docx
+
+# Test screenshots
+screenshot*.png
+screenshot*.bmp
+
+# IDE / Editor
+.vscode/
+.idea/
