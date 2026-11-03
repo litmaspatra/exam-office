@@ -52,8 +52,8 @@ if "%~1"=="--onedir" (
     "!VENV_PY!" -m PyInstaller --clean --noconfirm --windowed --onedir --name ExamOffice --icon icon.ico ^
         --collect-data docx --collect-data lxml ^
         --collect-submodules docx --collect-submodules lxml ^
-        --hidden-import papers --hidden-import docx_gen --hidden-import marker --hidden-import store ^
-        --add-data "icon.ico;." exam_office.py
+        --hidden-import paper_loader --hidden-import docx_gen --hidden-import marker --hidden-import store ^
+        --add-data "papers;papers" --add-data "icon.ico;." exam_office.py
 ) else (
     echo [*] Building onefile mode using ExamOffice.spec...
     "!VENV_PY!" -m PyInstaller --clean --noconfirm ExamOffice.spec

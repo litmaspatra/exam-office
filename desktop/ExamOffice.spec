@@ -11,6 +11,10 @@ datas = []
 datas += collect_data_files('docx')
 datas += collect_data_files('lxml')
 
+papers_path = os.path.join(spec_dir, 'papers')
+if os.path.exists(papers_path):
+    datas.append((papers_path, 'papers'))
+
 icon_path = os.path.join(spec_dir, 'icon.ico')
 if os.path.exists(icon_path):
     datas.append((icon_path, '.'))
@@ -23,7 +27,7 @@ hiddenimports = [
     'lxml',
     'lxml.etree',
     'lxml._elementpath',
-    'papers',
+    'paper_loader',
     'docx_gen',
     'marker',
     'store',
