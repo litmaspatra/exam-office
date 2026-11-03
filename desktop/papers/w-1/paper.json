@@ -1,0 +1,134 @@
+{
+  "schema_version": 1,
+  "id": "w-1",
+  "title": "Word Paper 1 - जल संरक्षण",
+  "duration_seconds": 600,
+  "max_marks": 25,
+  "pass_marks": 9.0,
+  "pass_marks_scst": 7.75,
+  "document": {
+    "heading": "जल संरक्षण",
+    "paragraphs": [
+      "जल जीवन का आधार है। बिना पानी के धरती पर जीवन की कल्पना भी नहीं की जा सकती। पानी का सही उपयोग और संरक्षण आज की सबसे बड़ी जरूरत है।",
+      "वर्षा जल संचयन से भूजल का स्तर बढ़ता है। हर घर की छत पर बरसात का पानी इकट्ठा करके उसे भूमि में उतारा जा सकता है। इससे कुएं और तालाब भरते हैं।",
+      "खेती में ड्रिप सिंचाई से पानी की बचत होती है। किसान भाइयों को फव्वारा सिंचाई अपनानी चाहिए। सरकार भी इसके लिए अनुदान देती है।",
+      "हर नागरिक का कर्तव्य है कि वह पानी की बर्बादी रोके। नल को ठीक रखें और जरूरत से ज्यादा पानी न बहाएं। जल है तो कल है।"
+    ],
+    "table": {
+      "head": ["योजना", "क्षेत्र", "लाभार्थी"],
+      "rows": [
+        ["जल शक्ति अभियान", "ग्रामीण", "1200"],
+        ["सूजलाम योजना", "शहरी", "850"],
+        ["अटल भूजल योजना", "कच्छार", ""]
+      ]
+    },
+    "find_replace": {"find": "पानी", "replace": "जल", "min_count": 3}
+  },
+  "tasks": [
+    {
+      "id": "t-w1-01",
+      "text": "पहले पैराग्राफ को Justify करें।",
+      "marks": 1,
+      "check": {"kind": "align", "para": 0, "val": "justify"},
+      "hint_on_fail": "पहले पैराग्राफ का Alignment Justified नहीं मिला।"
+    },
+    {
+      "id": "t-w1-02",
+      "text": "दूसरे पैराग्राफ में First Line Indent 0.5\" लगाएं।",
+      "marks": 1,
+      "check": {"kind": "first_line_indent", "para": 1, "val": 0.5},
+      "hint_on_fail": "दूसरे पैराग्राफ में First Line Indent 0.5\" नहीं मिला।"
+    },
+    {
+      "id": "t-w1-03",
+      "text": "तीसरे पैराग्राफ की Line Spacing 1.5 करें।",
+      "marks": 1,
+      "check": {"kind": "linespacing", "para": 2, "val": 1.5},
+      "hint_on_fail": "तीसरे पैराग्राफ की Line Spacing 1.5 नहीं मिली।"
+    },
+    {
+      "id": "t-w1-04",
+      "text": "चौथे पैराग्राफ को Bold करें।",
+      "marks": 1,
+      "check": {"kind": "bold", "para": 3},
+      "hint_on_fail": "चौथे पैराग्राफ के runs Bold नहीं मिले।"
+    },
+    {
+      "id": "t-w1-05",
+      "text": "शीर्षक (Heading) को केंद्र (Center) में करें और Font Size 16 करें।",
+      "marks": 2,
+      "check": {"kind": "heading_center_size", "val": 16},
+      "hint_on_fail": "शीर्षक Center में नहीं है, या Font Size 16 नहीं है।"
+    },
+    {
+      "id": "t-w1-06",
+      "text": "दूसरे पैराग्राफ का Font Color लाल (Red) करें।",
+      "marks": 1,
+      "check": {"kind": "color", "para": 1, "val": ["FF0000"]},
+      "hint_on_fail": "दूसरे पैराग्राफ का Font Color लाल (FF0000) नहीं मिला।"
+    },
+    {
+      "id": "t-w1-07",
+      "text": "चौथे पैराग्राफ में \"जल है तो कल है\" को Italic करें।",
+      "marks": 2,
+      "check": {"kind": "phrase_italic", "para": 3, "val": "जल है तो कल है"},
+      "hint_on_fail": "\"जल है तो कल है\" run Italic नहीं मिला।"
+    },
+    {
+      "id": "t-w1-08",
+      "text": "तीसरे पैराग्राफ के बाद Space After 12 pt करें।",
+      "marks": 1,
+      "check": {"kind": "spaceafter", "para": 2, "val": 12},
+      "hint_on_fail": "तीसरे पैराग्राफ का Space After 12pt नहीं मिला।"
+    },
+    {
+      "id": "t-w1-09",
+      "text": "Header में \"जल संरक्षण\" लिखें।",
+      "marks": 1,
+      "check": {"kind": "header_text", "val": "जल संरक्षण"},
+      "hint_on_fail": "Header में \"जल संरक्षण\" नहीं मिला।"
+    },
+    {
+      "id": "t-w1-10",
+      "text": "Footer में Page Number डालें।",
+      "marks": 1,
+      "check": {"kind": "footer_pagenum"},
+      "hint_on_fail": "Footer में Page Number field नहीं मिला।"
+    },
+    {
+      "id": "t-w1-11",
+      "text": "Find & Replace: पूरे document में \"पानी\" को \"जल\" से बदलें।",
+      "marks": 3,
+      "check": {"kind": "find_replace"},
+      "hint_on_fail": "\"पानी\" अभी भी document में है, या \"जल\" पर्याप्त बार नहीं मिला।"
+    },
+    {
+      "id": "t-w1-12",
+      "text": "Page की Orientation Landscape करें और Margins Narrow (0.5\") करें।",
+      "marks": 3,
+      "check": {"kind": "orient_margins_narrow"},
+      "hint_on_fail": "Orientation Landscape नहीं है, या Margins 0.5\" नहीं हैं।"
+    },
+    {
+      "id": "t-w1-13",
+      "text": "तीसरे पैराग्राफ को हल्के हरे (Light Green) रंग से Shade करें।",
+      "marks": 1,
+      "check": {"kind": "para_shading", "para": 2},
+      "hint_on_fail": "तीसरे पैराग्राफ पर Shading नहीं मिली (या White/Auto है)।"
+    },
+    {
+      "id": "t-w1-14",
+      "text": "Table की Heading Row को Bold करें और Shade (हल्का पीला) करें।",
+      "marks": 3,
+      "check": {"kind": "table_head_bold_shade"},
+      "hint_on_fail": "Table की Heading Row Bold नहीं है, या Cell Shading नहीं है।"
+    },
+    {
+      "id": "t-w1-15",
+      "text": "Table पर सभी Borders लगाएं और तीसरी row के तीसरे cell में \"500\" लिखें।",
+      "marks": 3,
+      "check": {"kind": "borders_and_cell", "row": 3, "col": 2, "val": "500"},
+      "hint_on_fail": "Table पर Borders नहीं मिलीं, या Cell [3][2] में \"500\" नहीं है।"
+    }
+  ]
+}

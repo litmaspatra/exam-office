@@ -1,0 +1,134 @@
+{
+  "schema_version": 1,
+  "id": "w-2",
+  "title": "Word Paper 2 - डिजिटल साक्षरता",
+  "duration_seconds": 600,
+  "max_marks": 25,
+  "pass_marks": 9.0,
+  "pass_marks_scst": 7.75,
+  "document": {
+    "heading": "डिजिटल साक्षरता",
+    "paragraphs": [
+      "आज का युग डिजिटल युग है। कम्प्यूटर और इन्टरनेट का ज्ञान हर व्यक्ति के लिए आवश्यक हो गया है। डिजिटल साक्षरता से हर काम घर बैठे होता है।",
+      "सरकारी सेवाएं अब ऑनलाइन उपलब्ध हैं। बिल भरना, फॉर्म जमा करना और राशि का भुगतान अब कम्प्यूटर से मिनटों में हो जाता है।",
+      "गाँवों में भी लोग स्मार्टफोन से भुगतान करने लगे हैं। डिजिटल लेनदेन सुरक्षित और पारदर्शी होता है। इससे समय की बचत होती है।",
+      "सावधानी भी जरूरी है। पासवर्ड किसी को न बताएं और अनजान लिंक न खोलें। साइबर सुरक्षा के नियमों का पालन करें।"
+    ],
+    "table": {
+      "head": ["सेवा", "उपयोगकर्ता", "वृद्धि"],
+      "rows": [
+        ["डिजिटल भुगतान", "ग्रामीण", ""],
+        ["ई-मित्र केन्द्र", "शहरी", "60%"],
+        ["ऑनलाइन शिक्षा", "विद्यार्थी", "80%"]
+      ]
+    },
+    "find_replace": {"find": "कम्प्यूटर", "replace": "कंप्यूटर", "min_count": 2}
+  },
+  "tasks": [
+    {
+      "id": "t-w2-01",
+      "text": "शीर्षक (Heading) को Bold करें और Font Color नीला (Blue) करें।",
+      "marks": 2,
+      "check": {"kind": "heading_bold_color", "val": ["0000FF", "0070C0", "2563EB", "2E74B5"]},
+      "hint_on_fail": "शीर्षक Bold नहीं है, या Font Color Blue नहीं है।"
+    },
+    {
+      "id": "t-w2-02",
+      "text": "पहले पैराग्राफ को केंद्र (Center) में संरेखित करें।",
+      "marks": 1,
+      "check": {"kind": "align", "para": 0, "val": "center"},
+      "hint_on_fail": "पहले पैराग्राफ का Alignment Center नहीं मिला।"
+    },
+    {
+      "id": "t-w2-03",
+      "text": "दूसरे पैराग्राफ को Italic करें।",
+      "marks": 1,
+      "check": {"kind": "italic", "para": 1},
+      "hint_on_fail": "दूसरे पैराग्राफ के runs Italic नहीं मिले।"
+    },
+    {
+      "id": "t-w2-04",
+      "text": "तीसरे पैराग्राफ की Line Spacing 2.0 करें।",
+      "marks": 1,
+      "check": {"kind": "linespacing", "para": 2, "val": 2.0},
+      "hint_on_fail": "तीसरे पैराग्राफ की Line Spacing 2.0 नहीं मिली।"
+    },
+    {
+      "id": "t-w2-05",
+      "text": "चौथे पैराग्राफ में Left Indent 0.5\" बढ़ाएं।",
+      "marks": 1,
+      "check": {"kind": "indent", "para": 3, "val": 0.5},
+      "hint_on_fail": "चौथे पैराग्राफ का Left Indent 0.5\" नहीं मिला।"
+    },
+    {
+      "id": "t-w2-06",
+      "text": "दूसरे पैराग्राफ में \"ऑनलाइन\" शब्द को Double Underline करें।",
+      "marks": 2,
+      "check": {"kind": "word_double_underline", "para": 1, "val": "ऑनलाइन"},
+      "hint_on_fail": "\"ऑनलाइन\" run पर Double Underline नहीं मिला।"
+    },
+    {
+      "id": "t-w2-07",
+      "text": "चौथे पैराग्राफ को पीले (Yellow) रंग से Highlight करें।",
+      "marks": 1,
+      "check": {"kind": "highlight", "para": 3, "val": "yellow"},
+      "hint_on_fail": "चौथे पैराग्राफ पर Yellow Highlight नहीं मिला।"
+    },
+    {
+      "id": "t-w2-08",
+      "text": "पहले पैराग्राफ को नए Page से शुरू करें (Page Break Before)।",
+      "marks": 2,
+      "check": {"kind": "page_break_before", "para": 0},
+      "hint_on_fail": "पहले पैराग्राफ पर Page Break Before नहीं मिला।"
+    },
+    {
+      "id": "t-w2-09",
+      "text": "Header में \"डिजिटल साक्षरता\" लिखें।",
+      "marks": 1,
+      "check": {"kind": "header_text", "val": "डिजिटल साक्षरता"},
+      "hint_on_fail": "Header में \"डिजिटल साक्षरता\" नहीं मिला।"
+    },
+    {
+      "id": "t-w2-10",
+      "text": "Footer में \"परीक्षा 2026\" लिखें और \"2026\" को Bold करें।",
+      "marks": 2,
+      "check": {"kind": "footer_text_bold", "val": "परीक्षा 2026", "word": "2026"},
+      "hint_on_fail": "Footer में \"परीक्षा 2026\" नहीं मिला, या \"2026\" Bold नहीं है।"
+    },
+    {
+      "id": "t-w2-11",
+      "text": "Find & Replace: पूरे document में \"कम्प्यूटर\" को \"कंप्यूटर\" से बदलें।",
+      "marks": 3,
+      "check": {"kind": "find_replace"},
+      "hint_on_fail": "\"कम्प्यूटर\" अभी भी document में है, या \"कंप्यूटर\" पर्याप्त बार नहीं मिला।"
+    },
+    {
+      "id": "t-w2-12",
+      "text": "Page Color हल्का नीला (Light Blue) करें।",
+      "marks": 2,
+      "check": {"kind": "page_color"},
+      "hint_on_fail": "Page Color set नहीं है (या White/Auto है)।"
+    },
+    {
+      "id": "t-w2-13",
+      "text": "Page Border लगाएं।",
+      "marks": 2,
+      "check": {"kind": "page_border"},
+      "hint_on_fail": "Page Border नहीं मिला (कम से कम 3 sides चाहिए)।"
+    },
+    {
+      "id": "t-w2-14",
+      "text": "Table की Heading Row को Bold और Center करें।",
+      "marks": 3,
+      "check": {"kind": "table_head_bold_center"},
+      "hint_on_fail": "Table की Heading Row Bold नहीं है, या Center Alignment नहीं है।"
+    },
+    {
+      "id": "t-w2-15",
+      "text": "Table की पहली row के तीसरे cell में \"75%\" लिखें।",
+      "marks": 1,
+      "check": {"kind": "cell_text", "row": 1, "col": 2, "val": "75%"},
+      "hint_on_fail": "Table Cell [1][2] में \"75%\" नहीं मिला।"
+    }
+  ]
+}
