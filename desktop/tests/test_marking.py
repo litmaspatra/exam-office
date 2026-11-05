@@ -131,23 +131,25 @@ def solve_paper_1(path):
     for r in body[1].runs:
         r.font.color.rgb = RGBColor(0xFF, 0x00, 0x00)
 
-    # t-w1-07: phrase_italic "जल है तो कल है" in para 3
+    # t-w1-07: phrase_italic "जल है तो कल है" (or Remington 'ty gS rks dy gS') in para 3
     full_text = body[3].text
-    phrase = "जल है तो कल है"
+    # Handle either Remington Kruti Dev or Unicode
+    phrase = 'ty gS rks dy gS' if 'ty gS rks dy gS' in full_text else 'जल है तो कल है'
     idx = full_text.find(phrase)
-    before = full_text[:idx]
-    after = full_text[idx + len(phrase):]
-    for r in body[3].runs:
-        r.text = ''
-    if body[3].runs:
-        body[3].runs[0].text = before
-    else:
-        body[3].add_run(before)
-    r_italic = body[3].add_run(phrase)
-    r_italic.italic = True
-    r_italic.bold = True
-    r_after = body[3].add_run(after)
-    r_after.bold = True
+    if idx != -1:
+        before = full_text[:idx]
+        after = full_text[idx + len(phrase):]
+        for r in body[3].runs:
+            r.text = ''
+        if body[3].runs:
+            body[3].runs[0].text = before
+        else:
+            body[3].add_run(before)
+        r_italic = body[3].add_run(phrase)
+        r_italic.italic = True
+        r_italic.bold = True
+        r_after = body[3].add_run(after)
+        r_after.bold = True
 
     # t-w1-08: spaceafter 12pt para 2
     body[2].paragraph_format.space_after = Pt(12)
@@ -167,11 +169,13 @@ def solve_paper_1(path):
     fld.append(r_el)
     footer_para._p.append(fld)
 
-    # t-w1-11: find_replace "पानी" -> "जल"
+    # t-w1-11: find_replace "पानी" -> "जल" (or Remington 'ikuh' -> 'ty')
     for p in doc.paragraphs:
         for r in p.runs:
             if 'पानी' in r.text:
                 r.text = r.text.replace('पानी', 'जल')
+            if 'ikuh' in r.text:
+                r.text = r.text.replace('ikuh', 'ty')
     if doc.tables:
         for row in doc.tables[0].rows:
             for cell in row.cells:
@@ -179,6 +183,8 @@ def solve_paper_1(path):
                     for r in p.runs:
                         if 'पानी' in r.text:
                             r.text = r.text.replace('पानी', 'जल')
+                        if 'ikuh' in r.text:
+                            r.text = r.text.replace('ikuh', 'ty')
 
     # t-w1-12: orientation landscape + margins narrow 0.5"
     sec = doc.sections[0]
@@ -255,22 +261,27 @@ def solve_paper_2(path):
     body[3].paragraph_format.left_indent = Inches(0.5)
 
     # t-w2-06: word_double_underline "ऑनलाइन" in para 1
+    from paper_loader import load_all_papers
+    import kruti_converter
     full = body[1].text
-    word = 'ऑनलाइन'
+    word_uni = 'ऑनलाइन'
+    word_kruti = kruti_converter.Unicode_to_KrutiDev(word_uni)
+    word = word_kruti if word_kruti in full else word_uni
     idx = full.find(word)
-    before = full[:idx]
-    after = full[idx + len(word):]
-    for r in body[1].runs:
-        r.text = ''
-    if body[1].runs:
-        body[1].runs[0].text = before
-    else:
-        body[1].add_run(before)
-    r_du = body[1].add_run(word)
-    r_du.italic = True
-    r_du.font.underline = WD_UNDERLINE.DOUBLE
-    r_after = body[1].add_run(after)
-    r_after.italic = True
+    if idx != -1:
+        before = full[:idx]
+        after = full[idx + len(word):]
+        for r in body[1].runs:
+            r.text = ''
+        if body[1].runs:
+            body[1].runs[0].text = before
+        else:
+            body[1].add_run(before)
+        r_du = body[1].add_run(word)
+        r_du.italic = True
+        r_du.font.underline = WD_UNDERLINE.DOUBLE
+        r_after = body[1].add_run(after)
+        r_after.italic = True
 
     # t-w2-07: highlight yellow para 3
     for r in body[3].runs:
@@ -294,6 +305,8 @@ def solve_paper_2(path):
         for r in p.runs:
             if 'कम्प्यूटर' in r.text:
                 r.text = r.text.replace('कम्प्यूटर', 'कंप्यूटर')
+            if 'dEI;wVj' in r.text:
+                r.text = r.text.replace('dEI;wVj', 'daI;wVj')
     if doc.tables:
         for row in doc.tables[0].rows:
             for cell in row.cells:
@@ -301,6 +314,8 @@ def solve_paper_2(path):
                     for r in p.runs:
                         if 'कम्प्यूटर' in r.text:
                             r.text = r.text.replace('कम्प्यूटर', 'कंप्यूटर')
+                        if 'dEI;wVj' in r.text:
+                            r.text = r.text.replace('dEI;wVj', 'daI;wVj')
 
     # t-w2-12: page_color (non-white)
     bg = OxmlElement('w:background')

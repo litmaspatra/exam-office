@@ -31,6 +31,15 @@ import tkinter as tk
 import winreg
 from tkinter import messagebox, ttk
 
+try:
+    import win32gui
+    import win32con
+    import win32process
+    import win32com.client
+    HAS_WIN32 = True
+except ImportError:
+    HAS_WIN32 = False
+
 # Ensure desktop/ is on sys.path regardless of CWD (works frozen and as script)
 _HERE = os.path.dirname(os.path.abspath(__file__))
 if _HERE not in sys.path:
@@ -67,12 +76,11 @@ FONT_MONO = ('Consolas', 11, 'bold')
 FONT_BIG = ('Segoe UI', 30, 'bold')
 
 RULES_TEXT = (
-    "Exam-hall rules (RSSB notice):\n"
-    "• Do ONLY what each task asks — extra edits forfeit marks for that task.\n"
-    "• Cut/Copy/Paste, right-click, Select-All and F1–F12 are NOT permitted.\n"
-    "• Ctrl+Z (Undo) and Backspace are allowed.\n"
-    "• Press Ctrl+S in Word after completing each task.\n"
-    "• Marking uses the LAST SAVED state — unsaved edits are invisible to this app."
+    "Exam-hall rules (RSSB pattern):\n"
+    "• Remington Gail / Kruti Dev fonts used. Do ONLY what each task asks.\n"
+    "• All questions are visible alongside MS Word on the left dock.\n"
+    "• Auto-save is enabled on Finish: you do not need to save manually before submitting!\n"
+    "• In Practice mode, your edits are evaluated live on save / auto-check."
 )
 
 
@@ -120,22 +128,21 @@ def _find_winword() -> str | None:
     return None
 
 
-def _open_in_word(path: str) -> None:
+def _open_in_word(path: str) -> subprocess.Popen | None:
     """
-    Open *path* in Microsoft Word.
+    Open *path* in Microsoft Word. Returns Popen object if launched via subprocess.
     Raises RuntimeError with a user-friendly message if Word cannot be launched.
     """
     word_exe = _find_winword()
     if word_exe:
         try:
-            subprocess.Popen([word_exe, path])
-            return
+            return subprocess.Popen([word_exe, path])
         except Exception as e:
             logger.error("WINWORD.EXE launch failed: %s", e)
     if os.name == 'nt':
         try:
             os.startfile(path)  # noqa: S606
-            return
+            return None
         except OSError as e:
             raise RuntimeError(
                 "Microsoft Word could not be launched.\n\n"
@@ -143,9 +150,31 @@ def _open_in_word(path: str) -> None:
                 f"System error: {e}"
             ) from e
     elif sys.platform == 'darwin':
-        subprocess.Popen(['open', path])
+        return subprocess.Popen(['open', path])
     else:
-        subprocess.Popen(['xdg-open', path])
+        return subprocess.Popen(['xdg-open', path])
+
+
+def _auto_save_active_word(docx_path: str) -> bool:
+    """
+    Attempt to silently save the document in the active Word instance via COM,
+    so the student does not have to manually press Ctrl+S before submitting.
+    """
+    if not HAS_WIN32:
+        return False
+    try:
+        word = win32com.client.GetActiveObject('Word.Application')
+        target_name = os.path.basename(docx_path).lower()
+        for doc in word.Documents:
+            if target_name in doc.Name.lower() or (hasattr(doc, 'FullName') and docx_path.lower() == doc.FullName.lower()):
+                doc.Save()
+                return True
+        if word.Documents.Count > 0:
+            word.ActiveDocument.Save()
+            return True
+    except Exception as e:
+        logger.debug("COM auto-save exception: %s", e)
+    return False
 
 
 # ── Safe grading with retries (handles Word file locks) ───────────────────────
@@ -237,8 +266,8 @@ class ExamOfficeApp(tk.Tk):
 
         store.setup_logging()
         self.title('ExamOffice – Word Efficiency Trainer')
-        self.geometry('1060x720')
-        self.minsize(940, 620)
+        self.geometry('1200x780')
+        self.minsize(980, 650)
         self.configure(bg=C_BG)
 
         icon = store.resource_path('icon.ico')
@@ -309,8 +338,9 @@ class ExamOfficeApp(tk.Tk):
             messagebox.showerror('Document Error', f"Could not create the exam document:\n\n{e}")
             return
 
+        proc = None
         try:
-            _open_in_word(docx_path)
+            proc = _open_in_word(docx_path)
         except RuntimeError as e:
             messagebox.showerror('Could Not Open Word', str(e))
             return
@@ -321,6 +351,9 @@ class ExamOfficeApp(tk.Tk):
             'attempt_id': attempt_id,
             'attempt_dir': attempt_dir,
             'docx_path': docx_path,
+            'proc': proc,
+            'docked_hwnd': 0,
+            'orig_style': 0,
             'deadline': time.monotonic() + paper.duration_seconds,
             'start_wall': time.time(),
             'last_mtime': None,
@@ -378,9 +411,9 @@ class ExamOfficeApp(tk.Tk):
         if self._finalized:
             return
         if not messagebox.askyesno(
-            'Finish & Mark',
-            'Press Ctrl+S in Word first to save any last edits.\n\n'
-            'Mark this attempt now?'
+            'Finish & Submit',
+            'Submit and mark your attempt now?\n\n'
+            '(Auto-save will automatically preserve your latest work in Word)'
         ):
             return
         self._finalize(reason='user_finish')
@@ -405,11 +438,23 @@ class ExamOfficeApp(tk.Tk):
         if s is None:
             return
 
+        # Auto-save document via COM so user doesn't have to save manually
+        _auto_save_active_word(s['docx_path'])
+
+        # Undock Word before closing/grading if it was docked
+        if HAS_WIN32 and s.get('docked_hwnd'):
+            try:
+                win32gui.SetParent(s['docked_hwnd'], 0)
+                if s.get('orig_style'):
+                    win32gui.SetWindowLong(s['docked_hwnd'], win32con.GWL_STYLE, s['orig_style'])
+            except Exception:
+                pass
+
         if reason == 'time_up':
             messagebox.showinfo(
                 'Time Up',
                 'The 10 minutes have ended.\n\n'
-                'Press Ctrl+S in Word NOW to save your final work, then click OK.'
+                'Your latest work has been automatically saved and will now be marked.'
             )
 
         # Grade the saved document
@@ -480,6 +525,13 @@ class ExamOfficeApp(tk.Tk):
             ):
                 return
         self._cancel_jobs()
+        if HAS_WIN32 and s and s.get('docked_hwnd'):
+            try:
+                win32gui.SetParent(s['docked_hwnd'], 0)
+                if s.get('orig_style'):
+                    win32gui.SetWindowLong(s['docked_hwnd'], win32con.GWL_STYLE, s['orig_style'])
+            except Exception:
+                pass
         self._session = None
         self._finalized = True
         self._show('HomeFrame')
@@ -498,6 +550,14 @@ class ExamOfficeApp(tk.Tk):
             ):
                 return
         self._cancel_jobs()
+        s = self._session
+        if HAS_WIN32 and s and s.get('docked_hwnd'):
+            try:
+                win32gui.SetParent(s['docked_hwnd'], 0)
+                if s.get('orig_style'):
+                    win32gui.SetWindowLong(s['docked_hwnd'], win32con.GWL_STYLE, s['orig_style'])
+            except Exception:
+                pass
         self.destroy()
 
 
@@ -658,48 +718,56 @@ class AttemptFrame(tk.Frame):
         super().__init__(parent, bg=C_BG)
         self._app = app
         self._task_labels: list[tuple[tk.Label, tk.Label]] = []
+        self._dock_attempts = 0
         self._build()
 
     def _build(self) -> None:
         # Top bar: paper name | timer | mode
         top = tk.Frame(self, bg=C_BG)
-        top.pack(fill='x', padx=20, pady=(12, 4))
+        top.pack(fill='x', padx=16, pady=(10, 4))
         self._title_lbl = _label(top, '', font=('Segoe UI', 12, 'bold'), fg='white', bg=C_BG)
         self._title_lbl.pack(side='left')
         self._timer_lbl = tk.Label(top, text='10:00', font=FONT_MONO,
                                    fg=C_BLUE, bg=C_BG)
-        self._timer_lbl.pack(side='left', padx=28)
+        self._timer_lbl.pack(side='left', padx=24)
         self._mode_lbl = _label(top, '', font=FONT_SMALL, fg=C_DIM, bg=C_BG)
         self._mode_lbl.pack(side='left')
 
         # Rules banner
         rules = _label(self, RULES_TEXT, font=FONT_SMALL, fg=C_TEXT,
-                       bg='#1a1c23', justify='left', anchor='nw', padx=14, pady=8)
-        rules.pack(fill='x', padx=20, pady=(0, 4))
+                       bg='#1a1c23', justify='left', anchor='nw', padx=12, pady=6)
+        rules.pack(fill='x', padx=16, pady=(0, 4))
 
-        # Document path
-        path_frame = tk.Frame(self, bg=C_BG)
-        path_frame.pack(fill='x', padx=20, pady=(0, 4))
-        _label(path_frame, 'Document:', font=FONT_SMALL, fg=C_DIM, bg=C_BG).pack(side='left')
-        self._path_lbl = _label(path_frame, '', font=FONT_SMALL, fg='#93c5fd', bg=C_BG)
-        self._path_lbl.pack(side='left', padx=6)
-        _btn(path_frame, 'Open in Word', self._reopen_word, small=True).pack(side='left', padx=4)
+        # Paned Window: Left pane for questions, Right pane for embedded Word docker
+        self._paned = tk.PanedWindow(self, orient='horizontal', sashrelief='raised', sashwidth=6, bg='#16181d')
+        self._paned.pack(fill='both', expand=True, padx=16, pady=4)
 
-        # Task list
-        list_outer = tk.Frame(self, bg=C_CARD2)
-        list_outer.pack(fill='both', expand=True, padx=20, pady=4)
-        canvas, self._task_inner, vsb = _scrollable_frame(list_outer, bg=C_CARD2)
+        # Left pane (Questions list)
+        left_pane = tk.Frame(self._paned, bg=C_CARD2)
+        self._paned.add(left_pane, minsize=380, width=440)
+
+        q_hdr = tk.Frame(left_pane, bg=C_CARD2)
+        q_hdr.pack(fill='x', padx=10, pady=(6, 2))
+        _label(q_hdr, 'Questions & Tasks', font=('Segoe UI', 11, 'bold'), fg=C_ACCENT, bg=C_CARD2).pack(side='left')
+        _label(q_hdr, '(Remington Gail / Kruti Dev)', font=FONT_SMALL, fg=C_DIM, bg=C_CARD2).pack(side='left', padx=8)
+
+        canvas, self._task_inner, vsb = _scrollable_frame(left_pane, bg=C_CARD2)
         canvas.pack(side='left', fill='both', expand=True)
         vsb.pack(side='right', fill='y')
         self._canvas = canvas
 
+        # Right pane (Word Docker container)
+        self._word_container = tk.Frame(self._paned, bg='#12141a')
+        self._paned.add(self._word_container, minsize=500)
+        self._word_container.bind('<Configure>', self._on_word_container_resize)
+
         # Bottom bar
         bot = tk.Frame(self, bg=C_BG)
-        bot.pack(fill='x', padx=20, pady=8)
+        bot.pack(fill='x', padx=16, pady=8)
         self._status_lbl = _label(bot, '', font=FONT_SMALL, fg=C_DIM, bg=C_BG)
         self._status_lbl.pack(side='left')
         _btn(bot, 'Abandon', self._app.abort_attempt).pack(side='right', padx=(6, 0))
-        _btn(bot, 'Finish & Mark', self._app.request_finish, accent=True).pack(side='right')
+        _btn(bot, 'Finish & Submit', self._app.request_finish, accent=True).pack(side='right')
 
     def on_show(self) -> None:
         s = self._app._session
@@ -708,37 +776,98 @@ class AttemptFrame(tk.Frame):
         paper = s['paper']
         self._title_lbl.config(text=paper.title)
         self._mode_lbl.config(text=(
-            'PRACTICE — tasks tick live on every Ctrl+S'
+            'PRACTICE — tasks tick live on save / auto-check'
             if s['mode'] == 'practice'
-            else 'EXAM — no live feedback; scored on Finish'
+            else 'EXAM — questions docked side-by-side with Word'
         ))
-        self._path_lbl.config(text=s['docx_path'])
         self.set_timer('10:00')
-        self.set_status('Document opened in MS Word — do the tasks and press Ctrl+S to save.')
+        self.set_status('Word is docked on the right. Auto-save preserves your work on submit.')
 
         for w in self._task_inner.winfo_children():
             w.destroy()
         self._task_labels = []
-        wrap = max(500, self._canvas.winfo_width() - 80)
+        wrap = 380
         for i, task in enumerate(paper.tasks):
             chk = _label(self._task_inner, '☐', font=FONT_BODY, fg=C_DIM, bg=C_CARD2)
-            chk.grid(row=i, column=0, padx=(10, 6), pady=3, sticky='nw')
+            chk.grid(row=i, column=0, padx=(8, 4), pady=4, sticky='nw')
             txt = _label(
                 self._task_inner,
                 f'{i + 1}. {task.text}   [{task.marks} mark{"s" if task.marks > 1 else ""}]',
                 font=FONT_BODY, fg=C_TEXT, bg=C_CARD2,
                 anchor='w', justify='left', wraplength=wrap
             )
-            txt.grid(row=i, column=1, pady=3, sticky='w')
+            txt.grid(row=i, column=1, pady=4, sticky='w')
             self._task_labels.append((chk, txt))
 
-    def _reopen_word(self) -> None:
+        # Trigger Word docking
+        self._dock_attempts = 0
+        self.after(200, self._try_dock_word)
+
+    def _try_dock_word(self) -> None:
         s = self._app._session
-        if s:
+        if not s or self._app._finalized:
+            return
+        if not HAS_WIN32:
+            return
+
+        target_pid = s.get('proc').pid if s.get('proc') else None
+        target_name = os.path.basename(s['docx_path']).lower()
+        word_hwnd = 0
+
+        def enum_cb(h, _):
+            nonlocal word_hwnd
+            if win32gui.IsWindowVisible(h):
+                cls = win32gui.GetClassName(h)
+                if 'OpusApp' in cls:
+                    _, pid = win32process.GetWindowThreadProcessId(h)
+                    if target_pid and pid == target_pid:
+                        word_hwnd = h
+                        return False
+                    text = win32gui.GetWindowText(h).lower()
+                    if target_name in text or 'word' in text:
+                        word_hwnd = h
+                        return False
+            return True
+
+        win32gui.EnumWindows(enum_cb, None)
+
+        if word_hwnd and self._word_container.winfo_id():
             try:
-                _open_in_word(s['docx_path'])
-            except RuntimeError as e:
-                messagebox.showerror('Could Not Open Word', str(e))
+                container_hwnd = self._word_container.winfo_id()
+                s['docked_hwnd'] = word_hwnd
+                s['orig_style'] = win32gui.GetWindowLong(word_hwnd, win32con.GWL_STYLE)
+
+                win32gui.SetParent(word_hwnd, container_hwnd)
+                style = s['orig_style']
+                style &= ~win32con.WS_POPUP
+                style &= ~win32con.WS_CAPTION
+                style &= ~win32con.WS_THICKFRAME
+                style |= win32con.WS_CHILD
+                win32gui.SetWindowLong(word_hwnd, win32con.GWL_STYLE, style)
+
+                self._on_word_container_resize()
+                logger.info("Successfully docked Word window %s into container", hex(word_hwnd))
+                return
+            except Exception as e:
+                logger.warning("Error docking Word window: %s", e)
+
+        self._dock_attempts += 1
+        if self._dock_attempts < 30:  # retry for ~6 seconds
+            self.after(200, self._try_dock_word)
+
+    def _on_word_container_resize(self, e=None) -> None:
+        s = self._app._session
+        if not s or not HAS_WIN32:
+            return
+        hwnd = s.get('docked_hwnd')
+        if hwnd and win32gui.IsWindow(hwnd):
+            w = self._word_container.winfo_width()
+            h = self._word_container.winfo_height()
+            if w > 20 and h > 20:
+                try:
+                    win32gui.MoveWindow(hwnd, 0, 0, w, h, True)
+                except Exception:
+                    pass
 
     def update_ticks(self, ticks: list[bool]) -> None:
         for (chk, txt), ok in zip(self._task_labels, ticks):

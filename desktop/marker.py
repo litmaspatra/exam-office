@@ -20,12 +20,27 @@ from docx.shared import Pt, Inches
 from docx.oxml.ns import qn
 
 from paper_loader import Paper, Task
+import kruti_converter
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
 def _norm(s: Any) -> str:
     return ' '.join((s or '').split())
+
+
+def _to_unicode_if_needed(text: str) -> str:
+    """Normalize text by decoding Remington/Kruti Dev legacy encoding back to Unicode if present."""
+    if not text:
+        return ''
+    try:
+        # Check if text contains non-ASCII or Devanagari Unicode
+        if any('\u0900' <= ch <= '\u097F' for ch in text):
+            return text
+        converted = kruti_converter.KrutiDev_to_Unicode(text)
+        return converted if converted else text
+    except Exception:
+        return text
 
 
 def _runs(p):
@@ -80,11 +95,23 @@ class Grader:
     # ── Text-unchanged guard ──────────────────────────────────────────────────
 
     def _text_ok(self, p, orig: str) -> bool:
-        t = _norm(p.text)
-        if t == _norm(orig):
+        t_raw = _norm(p.text)
+        orig_norm = _norm(orig)
+        orig_kruti = _norm(kruti_converter.Unicode_to_KrutiDev(orig))
+
+        if t_raw == orig_norm or t_raw == orig_kruti:
             return True
-        if self.fr and t == _norm(orig.replace(self.fr['find'], self.fr['replace'])):
+
+        t_uni = _norm(_to_unicode_if_needed(t_raw))
+        if t_uni == orig_norm:
             return True
+
+        if self.fr:
+            replaced_uni = _norm(orig.replace(self.fr['find'], self.fr['replace']))
+            replaced_kruti = _norm(kruti_converter.Unicode_to_KrutiDev(replaced_uni))
+            if t_raw == replaced_uni or t_raw == replaced_kruti or t_uni == replaced_uni:
+                return True
+
         return False
 
     def _para(self, i: int):
@@ -208,16 +235,24 @@ class Grader:
                     and self._text_ok(self.heading, self.paper.document.get('heading', '')))
 
         if k == 'header_text':
+            val_uni = check['val']
+            val_kruti = kruti_converter.Unicode_to_KrutiDev(val_uni)
             for s in self.doc.sections:
                 for p in s.header.paragraphs:
-                    if check['val'] in p.text:
+                    t = p.text
+                    t_uni = _to_unicode_if_needed(t)
+                    if val_uni in t or val_kruti in t or val_uni in t_uni:
                         return True
             return False
 
         if k == 'footer_text':
+            val_uni = check['val']
+            val_kruti = kruti_converter.Unicode_to_KrutiDev(val_uni)
             for s in self.doc.sections:
                 for p in s.footer.paragraphs:
-                    if check['val'] in p.text:
+                    t = p.text
+                    t_uni = _to_unicode_if_needed(t)
+                    if val_uni in t or val_kruti in t or val_uni in t_uni:
                         return True
             return False
 
@@ -233,10 +268,16 @@ class Grader:
             return False
 
         if k == 'footer_text_bold':
+            val_uni = check['val']
+            val_kruti = kruti_converter.Unicode_to_KrutiDev(val_uni)
+            word_uni = check['word']
+            word_kruti = kruti_converter.Unicode_to_KrutiDev(word_uni)
             for s in self.doc.sections:
                 for p in s.footer.paragraphs:
-                    if check['val'] in p.text and any(
-                        check['word'] in r.text and r.bold for r in _runs(p)
+                    t = p.text
+                    t_uni = _to_unicode_if_needed(t)
+                    if (val_uni in t or val_kruti in t or val_uni in t_uni) and any(
+                        (word_uni in r.text or word_kruti in r.text or word_uni in _to_unicode_if_needed(r.text)) and r.bold for r in _runs(p)
                     ):
                         return True
             return False
@@ -250,10 +291,23 @@ class Grader:
                 for row in self.table.rows:
                     for cell in row.cells:
                         texts.append(cell.text)
-            full = '\n'.join(texts)
-            if fr['find'] in full:
+            full_raw = '\n'.join(texts)
+            full_uni = _to_unicode_if_needed(full_raw)
+
+            find_uni = fr['find']
+            find_kruti = kruti_converter.Unicode_to_KrutiDev(find_uni)
+            replace_uni = fr['replace']
+            replace_kruti = kruti_converter.Unicode_to_KrutiDev(replace_uni)
+
+            if find_uni in full_raw or find_kruti in full_raw or find_uni in full_uni:
                 return False
-            return full.count(fr['replace']) >= fr['min_count']
+
+            count = (
+                full_raw.count(replace_kruti)
+                + full_raw.count(replace_uni)
+                + full_uni.count(replace_uni)
+            )
+            return count >= fr['min_count']
 
         if k == 'orientation':
             return self.sec.orientation == WD_ORIENT.LANDSCAPE
@@ -312,7 +366,10 @@ class Grader:
             if not self._table_bordered() or self.table is None:
                 return False
             try:
-                return _norm(self.table.rows[check['row']].cells[check['col']].text) == check['val']
+                raw_cell = _norm(self.table.rows[check['row']].cells[check['col']].text)
+                val_uni = _norm(check['val'])
+                val_kruti = _norm(kruti_converter.Unicode_to_KrutiDev(val_uni))
+                return raw_cell == val_uni or raw_cell == val_kruti or _norm(_to_unicode_if_needed(raw_cell)) == val_uni
             except IndexError:
                 return False
 
@@ -320,20 +377,27 @@ class Grader:
             if self.table is None:
                 return False
             try:
-                return _norm(self.table.rows[check['row']].cells[check['col']].text) == check['val']
+                raw_cell = _norm(self.table.rows[check['row']].cells[check['col']].text)
+                val_uni = _norm(check['val'])
+                val_kruti = _norm(kruti_converter.Unicode_to_KrutiDev(val_uni))
+                return raw_cell == val_uni or raw_cell == val_kruti or _norm(_to_unicode_if_needed(raw_cell)) == val_uni
             except IndexError:
                 return False
 
         if k == 'phrase_italic':
+            val_uni = check['val']
+            val_kruti = kruti_converter.Unicode_to_KrutiDev(val_uni)
             return self._para_task(
                 check['para'],
-                lambda p: any(check['val'] in r.text and r.italic for r in _runs(p))
+                lambda p: any((val_uni in r.text or val_kruti in r.text or val_uni in _to_unicode_if_needed(r.text)) and r.italic for r in _runs(p))
             )
 
         if k == 'word_double_underline':
+            val_uni = check['val']
+            val_kruti = kruti_converter.Unicode_to_KrutiDev(val_uni)
             return self._para_task(
                 check['para'],
-                lambda p: any(check['val'] in r.text and r.font.underline == WD_UNDERLINE.DOUBLE
+                lambda p: any((val_uni in r.text or val_kruti in r.text or val_uni in _to_unicode_if_needed(r.text)) and r.font.underline == WD_UNDERLINE.DOUBLE
                               for r in _runs(p))
             )
 

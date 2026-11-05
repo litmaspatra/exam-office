@@ -27,10 +27,16 @@ hiddenimports = [
     'lxml',
     'lxml.etree',
     'lxml._elementpath',
+    'kruti_converter',
     'paper_loader',
     'docx_gen',
     'marker',
     'store',
+    'win32gui',
+    'win32con',
+    'win32process',
+    'win32com',
+    'win32com.client',
 ]
 hiddenimports += collect_submodules('docx')
 hiddenimports += collect_submodules('lxml')

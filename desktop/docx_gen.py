@@ -2,9 +2,9 @@
 """
 docx_gen.py – Generate a fresh exam .docx from a Paper object.
 
-The document uses Nirmala UI (Windows Devanagari UI font; falls back to Mangal)
+The document uses Remington Gail / Kruti Dev 010 (falls back to DevLys 010 / Nirmala UI)
 with portrait A4, 1-inch margins, empty header/footer, and no table borders
-so students start from a clean slate.
+so students start from an authentic exam slate.
 """
 
 from __future__ import annotations
@@ -16,21 +16,34 @@ from docx.oxml.ns import qn
 from docx.oxml import OxmlElement
 
 from paper_loader import Paper
+import kruti_converter
 
-BASE_FONT = 'Nirmala UI'   # Falls back to Mangal on older Windows
-BASE_SIZE = Pt(12)
-HEADING_SIZE = Pt(14)
+KRUTI_FONT = 'Kruti Dev 010'
+BASE_SIZE = Pt(14)
+HEADING_SIZE = Pt(16)
 
 
-def _set_cs_font(style_or_run, name: str, size) -> None:
-    """Set both latin and complex-script font so Devanagari renders correctly in Word."""
+def _to_remington(text: str) -> str:
+    """Convert Unicode Hindi to Remington Gail (Kruti Dev 010) ASCII character codes."""
+    if not text:
+        return ''
+    return kruti_converter.Unicode_to_KrutiDev(text)
+
+
+def _set_font_properties(style_or_run, name: str, size) -> None:
+    """Set ascii, hAnsi, and complex-script fonts so Remington / Kruti Dev renders correctly in Word."""
     rpr = style_or_run.element.get_or_add_rPr()
     rfonts = rpr.find(qn('w:rFonts'))
     if rfonts is None:
         rfonts = OxmlElement('w:rFonts')
         rpr.append(rfonts)
-    for attr in ('w:ascii', 'w:hAnsi', 'w:cs'):
+    for attr in ('w:ascii', 'w:hAnsi', 'w:cs', 'w:eastAsia'):
         rfonts.set(qn(attr), name)
+    sz = rpr.find(qn('w:sz'))
+    if sz is None:
+        sz = OxmlElement('w:sz')
+        rpr.append(sz)
+    sz.set(qn('w:val'), str(int(size.pt * 2)))
     szcs = rpr.find(qn('w:szCs'))
     if szcs is None:
         szcs = OxmlElement('w:szCs')
@@ -39,27 +52,27 @@ def _set_cs_font(style_or_run, name: str, size) -> None:
 
 
 def generate(paper: Paper, out_path: str) -> str:
-    """Write a fresh exam document for *paper* to *out_path* and return it."""
+    """Write a fresh exam document for *paper* to *out_path* in Remington Gail (Kruti Dev 010)."""
     doc = Document()
 
     # --- base styles --------------------------------------------------------
     normal = doc.styles['Normal']
-    normal.font.name = BASE_FONT
+    normal.font.name = KRUTI_FONT
     normal.font.size = BASE_SIZE
-    _set_cs_font(normal, BASE_FONT, BASE_SIZE)
+    _set_font_properties(normal, KRUTI_FONT, BASE_SIZE)
 
     body_style = doc.styles.add_style('EOBody', WD_STYLE_TYPE.PARAGRAPH)
     body_style.base_style = doc.styles['Normal']
-    body_style.font.name = BASE_FONT
+    body_style.font.name = KRUTI_FONT
     body_style.font.size = BASE_SIZE
-    _set_cs_font(body_style, BASE_FONT, BASE_SIZE)
+    _set_font_properties(body_style, KRUTI_FONT, BASE_SIZE)
 
     head_style = doc.styles.add_style('EOHeading', WD_STYLE_TYPE.PARAGRAPH)
     head_style.base_style = doc.styles['Normal']
-    head_style.font.name = BASE_FONT
+    head_style.font.name = KRUTI_FONT
     head_style.font.size = HEADING_SIZE
     head_style.font.bold = True
-    _set_cs_font(head_style, BASE_FONT, HEADING_SIZE)
+    _set_font_properties(head_style, KRUTI_FONT, HEADING_SIZE)
 
     # --- section: portrait A4, 1-inch margins, empty header/footer ----------
     sec = doc.sections[0]
@@ -74,18 +87,31 @@ def generate(paper: Paper, out_path: str) -> str:
 
     # --- content: heading, paragraphs, table --------------------------------
     d = paper.document
-    doc.add_paragraph(d['heading'], style='EOHeading')
-    for p in d.get('paragraphs', []):
-        doc.add_paragraph(p, style='EOBody')
+    head_p = doc.add_paragraph(style='EOHeading')
+    head_r = head_p.add_run(_to_remington(d['heading']))
+    head_r.font.name = KRUTI_FONT
+    head_r.font.size = HEADING_SIZE
+    head_r.bold = True
+    _set_font_properties(head_r, KRUTI_FONT, HEADING_SIZE)
+
+    for p_text in d.get('paragraphs', []):
+        p = doc.add_paragraph(style='EOBody')
+        r = p.add_run(_to_remington(p_text))
+        r.font.name = KRUTI_FONT
+        r.font.size = BASE_SIZE
+        _set_font_properties(r, KRUTI_FONT, BASE_SIZE)
 
     if 'table' in d and d['table']:
         tdata = [d['table']['head']] + d['table']['rows']
         table = doc.add_table(rows=len(tdata), cols=len(tdata[0]))
-        for r, row in enumerate(tdata):
-            for c, txt in enumerate(row):
-                cell = table.rows[r].cells[c]
+        for r_idx, row in enumerate(tdata):
+            for c_idx, txt in enumerate(row):
+                cell = table.rows[r_idx].cells[c_idx]
                 cell.paragraphs[0].style = doc.styles['EOBody']
-                cell.paragraphs[0].add_run(txt)
+                cell_r = cell.paragraphs[0].add_run(_to_remington(txt))
+                cell_r.font.name = KRUTI_FONT
+                cell_r.font.size = BASE_SIZE
+                _set_font_properties(cell_r, KRUTI_FONT, BASE_SIZE)
 
     doc.save(out_path)
     return out_path
